@@ -1,21 +1,38 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { useEffect, useRef, ReactNode } from "react";
+import gsap from "@/lib/gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface RevealProps {
     children: ReactNode;
 }
 
 export default function Reveal({ children }: RevealProps) {
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-            {children}
-        </motion.div>
-    );
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        const ctx = gsap.context(() => {
+            gsap.from(el, {
+                opacity: 0,
+                y: 40,
+                duration: 0.6,
+                ease: "power2.out",
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 90%",
+                    toggleActions: "play none none reverse",
+                },
+            });
+        });
+
+        return () => ctx.revert();
+    }, []);
+
+    return <div ref={ref}>{children}</div>;
 }

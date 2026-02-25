@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-const roles = [
+import Reveal from "@/components/Reveal";
+const roles: string[] = [
     "Data Analyst",
     "Machine Learning Engineer",
     "Embedded Systems Engineer",
@@ -11,7 +11,7 @@ const roles = [
 
 export default function Hero() {
     const [text, setText] = useState("");
-    const [roleIndex, setRoleIndex] = useState(0);
+    const [roleIndex, setRoleIndex] = useState<number>(0);
     const [phase, setPhase] = useState<"typing" | "pausing" | "deleting">("typing");
 
     useEffect(() => {
@@ -27,7 +27,7 @@ export default function Hero() {
             } else {
                 timeout = setTimeout(() => {
                     setPhase("pausing");
-                }, 700); // smooth pause before delete
+                }, 300); // smooth pause before delete
             }
         }
 
@@ -43,8 +43,10 @@ export default function Hero() {
                     setText(current.slice(0, text.length - 1));
                 }, 40);
             } else {
-                setRoleIndex((prev) => (prev + 1) % roles.length);
-                setPhase("typing");
+                timeout = setTimeout(() => {
+                    setRoleIndex((prev) => (prev + 1) % roles.length);
+                    setPhase("typing");
+                }, 100);
             }
         }
 
@@ -52,14 +54,17 @@ export default function Hero() {
     }, [text, phase, roleIndex]);
 
     return (
+
         <section
             id="hero"
             className="h-screen flex flex-col justify-center items-center text-center px-6"
         >
+
+            <Reveal>
             <h1 className="text-5xl md:text-6xl font-bold mb-4">
                 Siddharth Lama
             </h1>
-
+            </Reveal>
             <p className="text-xl text-gray-400 mb-6 h-8 flex items-center">
                 {text}
                 <span className="ml-1 animate-pulse">|</span>

@@ -1,37 +1,42 @@
-import Reveal from "@/components/Reveal";
-const projects = [
-    {
-        title: "Mantis Rover (NASA HERC)",
-        desc: "Autonomous rover using ESP32, Arduino, Raspberry Pi 5, and LiDAR with SLAM navigation."
-    },
-    {
-        title: "AI Finance App",
-        desc: "Android app providing financial insights using ML models."
-    },
-    {
-        title: "Weather Analysis Website",
-        desc: "Full-stack weather app with impact analysis and clothing recommendations."
-    },
-    {
-        title: "Voice Recruitment Agent",
-        desc: "AI voice agent for first-round recruitment screening."
-    }
-];
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "@/lib/gsap";
 
 export default function Projects() {
+    const container = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            const panels = gsap.utils.toArray<HTMLElement>(".project-panel");
+
+            gsap.to(panels, {
+                xPercent: -100 * (panels.length - 1),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: container.current,
+                    pin: true,
+                    scrub: 1,
+                    snap: 1 / (panels.length - 1),
+                    end: () => "+=" + container.current!.offsetWidth,
+                },
+            });
+        }, container);
+
+        return () => ctx.revert();
+    }, []);
+
     return (
-        <section id="projects" className="py-20 px-6 max-w-6xl mx-auto">
-            <Reveal>
-            <h2 className="text-3xl font-bold mb-10">Projects</h2>
-            <div className="grid md:grid-cols-2 gap-8">
-                {projects.map((project, index) => (
-                    <div key={index} className="p-6 border border-gray-800 rounded-xl hover:border-gray-500 transition">
-                        <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
-                        <p className="text-gray-400">{project.desc}</p>
-                    </div>
-                ))}
-            </div>
-            </Reveal>
-        </section>
+        <div ref={container} className="flex w-[300vw]">
+            <section className="project-panel w-screen h-screen flex items-center justify-center bg-black">
+                Mantis Rover
+            </section>
+            <section className="project-panel w-screen h-screen flex items-center justify-center bg-gray-800">
+                AI Finance App
+            </section>
+            <section className="project-panel w-screen h-screen flex items-center justify-center bg-black">
+                Voice Agent
+            </section>
+        </div>
     );
 }
