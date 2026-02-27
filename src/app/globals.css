@@ -6,6 +6,13 @@ html {
   scroll-behavior: smooth;
 }
 
+.gradient-heading {
+  @apply bg-linear-to-b from-cyan-200 to-blue-300 bg-clip-text text-transparent;
+}
+
+.gradient-content {
+  @apply bg-linear-to-b from-cyan-200 to-purple-400 bg-clip-text text-transparent;
+}
 
 :root {
   --background: #ffffff;
@@ -37,4 +44,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.custom-bg-one {
+  background: linear-gradient(to right, black, #3a05c4)
+}
+
+.custom-bg-two {
+  background: linear-gradient(to right, cyan, skyblue)
 }
