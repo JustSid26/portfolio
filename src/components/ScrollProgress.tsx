@@ -15,9 +15,8 @@ export default function ScrollProgress() {
                 scaleX: 1,
                 ease: "none",
                 scrollTrigger: {
-                    trigger: document.body,
-                    start: "top top",
-                    end: "bottom bottom",
+                    start: 0,
+                    end: () => ScrollTrigger.maxScroll(window),
                     scrub: true,
                 },
             });
@@ -29,8 +28,12 @@ export default function ScrollProgress() {
     return (
         <div
             ref={barRef}
-            className="fixed top-0 left-0 right-0 h-1 bg-white origin-left z-50"
-            style={{ transform: "scaleX(0)" }}
+            className="fixed top-0 left-0 right-0 h-[3px] z-[100] origin-left"
+            style={{
+                transform: "scaleX(0)",
+                background: "linear-gradient(90deg, #ffffff, #b0b0b0, #808080)",
+                boxShadow: "0 0 10px rgba(255, 255, 255, 0.4), 0 0 20px rgba(255, 255, 255, 0.2)",
+            }}
         />
     );
 }
