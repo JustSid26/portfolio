@@ -45,12 +45,12 @@ export default function Skills() {
 
     return (
         <section ref={sectionRef} id="skills" className="py-20 px-6 max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold mb-10 text-center">Skills</h2>
+            <h2 className="text-3xl font-bold mb-10 text-center gradient-heading">Skills</h2>
             <div className="flex flex-wrap gap-4 justify-center">
                 {skills.map((skill, index) => (
                     <span
                         key={index}
-                        className="skill-badge px-4 py-2 border border-gray-700 rounded-lg text-gray-300"
+                        className="skill-badge px-4 py-2 border border-gray-700 rounded-lg gradient-content"
                     >
                         {skill}
                     </span>

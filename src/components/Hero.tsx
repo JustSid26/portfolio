@@ -61,11 +61,11 @@ export default function Hero() {
         >
 
             <Reveal>
-            <h1 className="text-5xl md:text-6xl font-bold mb-4">
+            <h1 className="text-5xl md:text-6xl font-bold mb-4 gradient-heading">
                 Siddharth Lama
             </h1>
             </Reveal>
-            <p className="text-xl text-gray-400 mb-6 h-8 flex items-center">
+            <p className="text-xl text-gray-400 mb-6 h-8 flex items-center gradient-content">
                 {text}
                 <span className="ml-1 animate-pulse">|</span>
             </p>

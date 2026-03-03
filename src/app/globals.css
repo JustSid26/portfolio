@@ -1,55 +1,333 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ─── */
+:root {
+  /* Dark graphite + clean white */
+  --bg-primary: #111318; /* main graphite background */
+  --bg-secondary: #181b23;
+  --bg-card: rgba(25, 28, 36, 0.96); /* slightly lighter graphite cards */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-glow: rgba(255, 255, 255, 0.16);
+  --text-primary: #f5f7fb; /* crisp soft white */
+  --text-secondary: #9ca2b0;
+  --accent-cyan: #ffffff;   /* all accents stay monochrome */
+  --accent-purple: #d5d7dd;
+  --accent-violet: #a6a9b3;
+  --accent-blue: #c2c6d0;
+  --glow-cyan: rgba(255, 255, 255, 0.18);
+  --glow-purple: rgba(255, 255, 255, 0.08);
+}
 
+@theme inline {
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono);
+}
 
+/* ─── Base Styles ─── */
 html {
   scroll-behavior: smooth;
 }
 
-.gradient-heading {
-  @apply bg-linear-to-b from-cyan-200 to-blue-300 bg-clip-text text-transparent;
-}
-
-.gradient-content {
-  @apply bg-linear-to-b from-cyan-200 to-purple-400 bg-clip-text text-transparent;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-
-@keyframes gradientMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+::selection {
+  background: rgba(255, 255, 255, 0.25);
+  color: #000;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.custom-bg-one {
-  background: linear-gradient(to right, black, #3a05c4)
+/* ─── Animated Background Mesh ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(245, 247, 252, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(245, 247, 252, 0.04), transparent),
+    radial-gradient(ellipse 50% 60% at 50% 80%, rgba(245, 247, 252, 0.025), transparent);
+  animation: meshFloat 20s ease-in-out infinite;
 }
 
-.custom-bg-two {
-  background: linear-gradient(to right, cyan, skyblue)
+@keyframes meshFloat {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+/* ─── Gradient Text Classes ─── */
+.gradient-heading {
+  background: linear-gradient(135deg, #ffffff 0%, #d0d0d0 50%, #a0a0a0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-content {
+  background: linear-gradient(180deg, rgba(245, 245, 245, 0.9) 0%, rgba(180, 180, 180, 0.7) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ─── Glassmorphism ─── */
+.glass {
+  background: rgba(15, 15, 15, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+}
+
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 30px var(--glow-cyan), 0 0 60px var(--glow-purple);
+}
+
+/* ─── Glow Effects ─── */
+.glow-border {
+  position: relative;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-violet));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.glow-border:hover::before {
+  opacity: 1;
+}
+
+/* ─── Section Divider ─── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glow), transparent);
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+/* ─── Gradient Button ─── */
+.btn-glow {
+  position: relative;
+  padding: 14px 36px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(180, 180, 180, 0.12));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.btn-glow:hover {
+  border-color: #ffffff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.25), 0 0 40px rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.btn-glow:hover::before {
+  opacity: 1;
+}
+
+/* ─── Skill Badge ─── */
+.skill-badge {
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  cursor: default;
+}
+
+.skill-badge:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 15px var(--glow-cyan);
+  transform: translateY(-3px);
+  color: var(--accent-cyan);
+}
+
+/* ─── Custom Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ffffff, #b0b0b0);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--accent-cyan), var(--accent-violet));
+}
+
+/* ─── Keyword Highlight ─── */
+.keyword-highlight {
+  position: relative;
+  color: var(--text-primary);
+  -webkit-text-fill-color: var(--text-primary);
+}
+
+.keyword-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.keyword-highlight.active::after {
+  transform: scaleX(1);
+}
+
+/* ─── Utility Animations ─── */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--glow-cyan);
+  }
+
+  50% {
+    box-shadow: 0 0 20px var(--glow-cyan), 0 0 40px var(--glow-purple);
+  }
+}
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ─── Project Card ─── */
+.project-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 520px;
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.project-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 8px 40px var(--glow-cyan), 0 0 80px var(--glow-purple);
+  transform: translateY(-4px);
+}
+
+.project-tag {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f5f5f5;
+}
+
+/* ─── Social Link ─── */
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-link:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 15px var(--glow-cyan);
+  transform: translateY(-3px);
+}
+
+/* ─── Dot Particle ─── */
+.particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
 }
