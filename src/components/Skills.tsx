@@ -3,7 +3,6 @@
 import { ReactNode, useEffect, useRef } from "react";
 import gsap from "@/lib/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Reveal from "./Reveal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -282,23 +281,23 @@ export default function Skills() {
         if (!section) return;
 
         const ctx = gsap.context(() => {
+            gsap.from(".skills-head", {
+                opacity: 0,
+                y: 36,
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power3.out",
+                scrollTrigger: { trigger: section, start: "top 78%", once: true },
+            });
+
             const groups = section.querySelectorAll(".skill-category");
-
-            // Ensure groups are hidden until the section scrolls into view
-            gsap.set(groups, { opacity: 0, y: 24 });
-
-            // Stagger skill groups one by one as section enters viewport
-            gsap.to(groups, {
-                opacity: 1,
-                y: 0,
-                duration: 0.5,
-                stagger: 0.15,
+            gsap.from(groups, {
+                opacity: 0,
+                y: 30,
+                duration: 0.6,
+                stagger: 0.1,
                 ease: "power2.out",
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top 85%",
-                    once: true,
-                },
+                scrollTrigger: { trigger: ".skill-grid", start: "top 82%", once: true },
             });
         }, section);
 
@@ -306,38 +305,43 @@ export default function Skills() {
     }, []);
 
     return (
-        <section ref={sectionRef} id="skills" className="py-32 px-6 max-w-5xl mx-auto">
-            <Reveal>
-                <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold gradient-heading">
-                        Skills
-                    </h2>
-                </div>
-            </Reveal>
+        <section ref={sectionRef} id="skills" className="section">
+            <div className="shell">
+                <p className="eyebrow skills-head">03 — Toolkit</p>
+                <h2 className="skills-head section-title max-w-3xl">
+                    The stack I reach for
+                </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-12">
-                {skillCategories.map((cat, ci) => (
-                    <div key={ci} className="skill-category flex flex-col items-center md:items-start">
-                        <h3
-                            className="text-sm font-semibold uppercase tracking-[0.2em] mb-5"
-                            style={{ color: "#e0e0e0" }}
+                <div className="skill-grid mt-16 grid gap-x-10 gap-y-12 md:grid-cols-2">
+                    {skillCategories.map((cat, ci) => (
+                        <div
+                            key={ci}
+                            className="skill-category border-t pt-6"
+                            style={{ borderColor: "var(--line)" }}
                         >
-                            {cat.category}
-                        </h3>
-                        <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                            {cat.skills.map((skill, si) => (
-                                <span key={si} className="skill-badge inline-flex items-center gap-2">
-                                    {skillIconMap[skill] && (
-                                        <span className="text-xs text-gray-200" aria-hidden="true">
-                                            {skillIconMap[skill]}
-                                        </span>
-                                    )}
-                                    <span>{skill}</span>
+                            <div className="flex items-baseline gap-3 mb-5">
+                                <span className="font-mono text-xs" style={{ color: "var(--ice)" }}>
+                                    {String(ci + 1).padStart(2, "0")}
                                 </span>
-                            ))}
+                                <h3 className="label" style={{ color: "var(--ink-dim)" }}>
+                                    {cat.category}
+                                </h3>
+                            </div>
+                            <div className="flex flex-wrap gap-2.5">
+                                {cat.skills.map((skill, si) => (
+                                    <span key={si} className="skill-badge">
+                                        {skillIconMap[skill] && (
+                                            <span aria-hidden="true" style={{ color: "var(--ink-dim)" }}>
+                                                {skillIconMap[skill]}
+                                            </span>
+                                        )}
+                                        <span>{skill}</span>
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </section>
     );
