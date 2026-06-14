@@ -2,127 +2,99 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const sections = ["about", "projects", "skills", "contact"];
+const sections = [
+    { id: "about", label: "About" },
+    { id: "work", label: "Work" },
+    { id: "skills", label: "Skills" },
+    { id: "contact", label: "Contact" },
+];
 
 export default function Navbar() {
     const [active, setActive] = useState<string>("");
     const [scrolled, setScrolled] = useState(false);
     const navRef = useRef<HTMLElement>(null);
-    const indicatorRef = useRef<HTMLDivElement>(null);
-    const linksRef = useRef<(HTMLButtonElement | null)[]>([]);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Stagger nav links (no vertical offset to avoid off-screen issues)
-            gsap.from(".nav-link", {
+            gsap.from(".nav-item", {
                 opacity: 0,
+                y: -12,
                 duration: 0.6,
-                stagger: 0.1,
+                stagger: 0.08,
                 ease: "power2.out",
-                delay: 0.2,
+                delay: 2.6,
             });
         });
 
-        // Scroll detection for glassmorphism enhancement
-        const onScroll = () => {
-            setScrolled(window.scrollY > 50);
-        };
+        const onScroll = () => setScrolled(window.scrollY > 40);
         window.addEventListener("scroll", onScroll, { passive: true });
 
-        // Section observers
         const observers: IntersectionObserver[] = [];
-        sections.forEach((id) => {
-            const element = document.getElementById(id);
-            if (!element) return;
-
-            const observer = new IntersectionObserver(
-                ([entry]) => {
-                    if (entry.isIntersecting) {
-                        setActive(id);
-                    }
-                },
+        sections.forEach(({ id }) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const obs = new IntersectionObserver(
+                ([entry]) => entry.isIntersecting && setActive(id),
                 { threshold: 0.25 }
             );
-
-            observer.observe(element);
-            observers.push(observer);
+            obs.observe(el);
+            observers.push(obs);
         });
 
         return () => {
             ctx.revert();
             window.removeEventListener("scroll", onScroll);
-            observers.forEach((obs) => obs.disconnect());
+            observers.forEach((o) => o.disconnect());
         };
     }, []);
-
-    // Animate indicator position
-    useEffect(() => {
-        const idx = sections.indexOf(active);
-        const btn = linksRef.current[idx];
-        const indicator = indicatorRef.current;
-        if (!btn || !indicator) return;
-
-        gsap.to(indicator, {
-            x: btn.offsetLeft,
-            width: btn.offsetWidth,
-            duration: 0.4,
-            ease: "power2.inOut",
-        });
-    }, [active]);
-
-    const scrollToSection = (id: string) => {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-    };
 
     return (
         <nav
             ref={navRef}
-            className={`fixed top-0 left-0 right-0 z-40 flex justify-between items-center px-8 py-5 transition-all duration-500 ${scrolled
-                ? "glass shadow-[0_4px_30px_rgba(255,255,255,0.08)]"
-                : "bg-transparent"
-                }`}
+            className={`fixed top-0 inset-x-0 z-40 transition-all duration-500 ${
+                scrolled ? "glass py-3" : "py-5"
+            }`}
         >
-            <h1
-                className="text-xl font-bold cursor-pointer tracking-tight"
-                onClick={() => scrollToSection("hero")}
-                style={{
-                    background: "linear-gradient(135deg, #ffffff, #b0b0b0)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                }}
-            >
-                {"<Sid/>"}
-            </h1>
+            <div className="shell flex items-center justify-between">
+                <a
+                    href="#hero"
+                    className="nav-item font-mono text-base font-semibold tracking-tight"
+                    style={{ color: "var(--ink)" }}
+                >
+                    SL<span style={{ color: "var(--ice)" }}>.</span>
+                </a>
 
-            <div className="space-x-8 hidden md:flex relative">
-                {/* Animated underline indicator */}
-                <div
-                    ref={indicatorRef}
-                    className="absolute -bottom-1 h-[2px] rounded-full"
-                    style={{
-                        background: "linear-gradient(90deg, #ffffff, #b0b0b0)",
-                        boxShadow: "0 0 8px rgba(255, 255, 255, 0.3)",
-                        width: 0,
-                    }}
-                />
+                <div className="hidden md:flex items-center gap-8">
+                    {sections.map(({ id, label }, i) => (
+                        <a
+                            key={id}
+                            href={`#${id}`}
+                            className="nav-item group flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
+                            style={{ color: active === id ? "var(--ink)" : "var(--ink-mute)" }}
+                        >
+                            <span
+                                className="font-mono text-[0.65rem]"
+                                style={{ color: active === id ? "var(--ice)" : "var(--ink-faint)" }}
+                            >
+                                0{i + 1}
+                            </span>
+                            <span className="link-underline">{label}</span>
+                        </a>
+                    ))}
+                </div>
 
-                {sections.map((section, i) => (
-                    <button
-                        key={section}
-                        ref={(el) => { linksRef.current[i] = el; }}
-                        onClick={() => scrollToSection(section)}
-                        className={`nav-link relative text-sm font-medium tracking-wide uppercase transition-colors duration-300 ${active === section
-                            ? "text-gray-100"
-                            : "text-gray-400 hover:text-gray-100"
-                            }`}
-                    >
-                        {section.charAt(0).toUpperCase() + section.slice(1)}
-                    </button>
-                ))}
+                <a
+                    href="#contact"
+                    className="nav-item hidden sm:inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border transition-all duration-300"
+                    style={{ borderColor: "var(--line-strong)", color: "var(--ink)" }}
+                >
+                    <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    </span>
+                    Available
+                </a>
             </div>
         </nav>
     );
