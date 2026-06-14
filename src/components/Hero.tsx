@@ -99,7 +99,7 @@ export default function Hero() {
             <div className="shell relative z-10">
                 <div className="hero-content max-w-4xl">
                     <p className="eyebrow hero-stagger mb-6">
-                        Siliguri, India · Available 2026
+                        Mumbai, India · Available 2026
                     </p>
 
                     <h1

@@ -62,7 +62,9 @@ export default function Navbar() {
                     className="nav-item font-mono text-base font-semibold tracking-tight"
                     style={{ color: "var(--ink)" }}
                 >
-                    SL<span style={{ color: "var(--ice)" }}>.</span>
+                    <span style={{ color: "var(--ice)" }}>&lt;</span>
+                    Sid
+                    <span style={{ color: "var(--ice)" }}>/&gt;</span>
                 </a>
 
                 <div className="hidden md:flex items-center gap-8">
