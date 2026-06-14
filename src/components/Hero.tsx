@@ -1,211 +1,163 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import gsap from "@/lib/gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import MagneticButton from "./MagneticButton";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const roles: string[] = [
-    "Data Analyst",
-    "Machine Learning Engineer",
-    "Embedded Systems Engineer",
-    "Autonomous Systems Developer",
+const CrystalScene = dynamic(() => import("./three/CrystalScene"), { ssr: false });
+
+const roles = [
+    "Data Science",
+    "Machine Learning",
+    "Embedded Systems",
+    "Autonomous Robotics",
 ];
 
 export default function Hero() {
     const sectionRef = useRef<HTMLElement>(null);
     const nameRef = useRef<HTMLHeadingElement>(null);
-    const subtitleRef = useRef<HTMLParagraphElement>(null);
-    const ctaRef = useRef<HTMLDivElement>(null);
-    const particlesRef = useRef<HTMLDivElement>(null);
 
     const [text, setText] = useState("");
-    const [roleIndex, setRoleIndex] = useState<number>(0);
+    const [roleIndex, setRoleIndex] = useState(0);
     const [phase, setPhase] = useState<"typing" | "pausing" | "deleting">("typing");
 
-    // Typewriter effect
+    // Typewriter
     useEffect(() => {
         const current = roles[roleIndex];
-        let timeout: NodeJS.Timeout;
-
+        let t: NodeJS.Timeout;
         if (phase === "typing") {
-            if (text.length < current.length) {
-                timeout = setTimeout(() => {
-                    setText(current.slice(0, text.length + 1));
-                }, 70);
-            } else {
-                timeout = setTimeout(() => setPhase("pausing"), 1200);
-            }
-        }
-
-        if (phase === "pausing") {
-            timeout = setTimeout(() => setPhase("deleting"), 300);
-        }
-
-        if (phase === "deleting") {
-            if (text.length > 0) {
-                timeout = setTimeout(() => {
-                    setText(current.slice(0, text.length - 1));
-                }, 40);
-            } else {
-                timeout = setTimeout(() => {
-                    setRoleIndex((prev) => (prev + 1) % roles.length);
+            if (text.length < current.length)
+                t = setTimeout(() => setText(current.slice(0, text.length + 1)), 65);
+            else t = setTimeout(() => setPhase("pausing"), 1400);
+        } else if (phase === "pausing") {
+            t = setTimeout(() => setPhase("deleting"), 300);
+        } else {
+            if (text.length > 0)
+                t = setTimeout(() => setText(current.slice(0, text.length - 1)), 35);
+            else
+                t = setTimeout(() => {
+                    setRoleIndex((p) => (p + 1) % roles.length);
                     setPhase("typing");
-                }, 100);
-            }
+                }, 120);
         }
-
-        return () => clearTimeout(timeout);
+        return () => clearTimeout(t);
     }, [text, phase, roleIndex]);
 
-    // GSAP Entrance Timeline + Particles
+    // Entrance + scroll parallax
     useEffect(() => {
         const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ delay: 0.4 });
-
-            // Animate each character of the name
-            const nameChars = nameRef.current?.querySelectorAll(".name-char");
-            if (nameChars) {
-                tl.from(nameChars, {
+            const tl = gsap.timeline({ delay: 2.5 }); // after preloader
+            const chars = nameRef.current?.querySelectorAll(".name-char");
+            if (chars) {
+                tl.from(chars, {
+                    yPercent: 120,
                     opacity: 0,
-                    y: 80,
-                    rotationX: -90,
-                    duration: 0.8,
+                    rotateX: -80,
+                    duration: 1,
                     stagger: 0.04,
-                    ease: "back.out(1.7)",
+                    ease: "expo.out",
                 });
             }
-
-            // Subtitle line
             tl.from(
-                subtitleRef.current,
-                {
-                    opacity: 0,
-                    y: 30,
-                    duration: 0.8,
-                    ease: "power3.out",
-                },
-                "-=0.3"
+                ".hero-stagger",
+                { opacity: 0, y: 26, duration: 0.8, stagger: 0.12, ease: "power3.out" },
+                "-=0.6"
             );
 
-            // Scroll CTA
-            tl.from(
-                ctaRef.current,
-                {
-                    opacity: 0,
-                    y: 20,
-                    duration: 0.6,
-                    ease: "power2.out",
+            gsap.to(".hero-content", {
+                y: -90,
+                opacity: 0,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: sectionRef.current,
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true,
                 },
-                "-=0.2"
-            );
-
-            // Bobbing scroll CTA
-            gsap.to(ctaRef.current, {
-                y: -8,
-                duration: 1.5,
-                ease: "power1.inOut",
-                yoyo: true,
-                repeat: -1,
             });
-
-            // Floating particles
-            const particles = particlesRef.current?.querySelectorAll(".particle");
-            if (particles) {
-                particles.forEach((p) => {
-                    gsap.set(p, {
-                        x: Math.random() * window.innerWidth,
-                        y: Math.random() * window.innerHeight,
-                    });
-
-                    gsap.to(p, {
-                        y: `+=${Math.random() * 100 - 50}`,
-                        x: `+=${Math.random() * 60 - 30}`,
-                        opacity: Math.random() * 0.6 + 0.1,
-                        duration: Math.random() * 4 + 3,
-                        ease: "sine.inOut",
-                        yoyo: true,
-                        repeat: -1,
-                    });
-                });
-            }
         }, sectionRef);
-
         return () => ctx.revert();
     }, []);
 
-    const nameText = "Siddharth Lama";
+    const name = "Siddharth Lama";
 
     return (
         <section
             ref={sectionRef}
             id="hero"
-            className="relative h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden"
+            className="relative min-h-screen flex items-center overflow-hidden"
         >
-            {/* Floating particles */}
-            <div ref={particlesRef} className="absolute inset-0 pointer-events-none">
-                {Array.from({ length: 40 }).map((_, i) => (
-                    <div key={i} className="particle" />
-                ))}
+            {/* 3D crystal, ambient */}
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-90">
+                <CrystalScene />
             </div>
 
-            {/* Radial glow behind text */}
-            <div
-                className="absolute w-[600px] h-[600px] rounded-full pointer-events-none"
-                style={{
-                    background: "radial-gradient(circle, rgba(0,229,255,0.08) 0%, transparent 70%)",
-                    filter: "blur(40px)",
-                }}
-            />
+            <div className="shell relative z-10">
+                <div className="hero-content max-w-4xl">
+                    <p className="eyebrow hero-stagger mb-6">
+                        Siliguri, India · Available 2026
+                    </p>
 
-            <h1
-                ref={nameRef}
-                className="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-6 tracking-tight"
-                style={{ perspective: 600 }}
-            >
-                {nameText.split("").map((char, i) => (
-                    <span
-                        key={i}
-                        className="name-char inline-block gradient-heading"
-                        style={{
-                            whiteSpace: char === " " ? "pre" : "normal",
-                        }}
+                    <h1
+                        ref={nameRef}
+                        className="font-bold tracking-tight leading-[0.95]"
+                        style={{ fontSize: "clamp(2.8rem, 9vw, 7.5rem)", perspective: 800 }}
                     >
-                        {char}
-                    </span>
-                ))}
-            </h1>
+                        {name.split(" ").map((word, wi) => (
+                            <span key={wi} className="block overflow-hidden">
+                                <span className="inline-block">
+                                    {word.split("").map((c, i) => (
+                                        <span key={i} className="name-char inline-block aurora-text">
+                                            {c}
+                                        </span>
+                                    ))}
+                                </span>
+                            </span>
+                        ))}
+                    </h1>
 
-            <p
-                ref={subtitleRef}
-                className="text-lg md:text-xl font-light mb-10 h-8 flex items-center justify-center"
-                style={{ color: "var(--text-secondary)" }}
-            >
-                <span className="gradient-content">{text}</span>
-                <span
-                    className="ml-1 inline-block w-[2px] h-6"
-                    style={{
-                        background: "var(--accent-cyan)",
-                        animation: "pulse-glow 1.2s ease-in-out infinite",
-                    }}
-                />
-            </p>
+                    <p
+                        className="hero-stagger mt-8 max-w-2xl text-xl md:text-2xl leading-relaxed"
+                        style={{ color: "var(--ink-dim)" }}
+                    >
+                        I build systems that{" "}
+                        <span style={{ color: "var(--ink)" }}>sense, decide &amp; act</span> — from
+                        data pipelines and ML models to autonomous rovers.
+                    </p>
 
-            {/* Scroll CTA */}
-            <div ref={ctaRef} className="absolute bottom-12">
-                <div className="flex flex-col items-center gap-2 cursor-pointer opacity-50 hover:opacity-80 transition-opacity">
-                    <span className="text-xs uppercase tracking-[0.3em]" style={{ color: "var(--text-secondary)" }}>
-                        Scroll
-                    </span>
-                    <div
-                        className="w-[1px] h-8"
-                        style={{
-                            background: "linear-gradient(180deg, var(--accent-cyan), transparent)",
-                        }}
-                    />
+                    <p className="hero-stagger mt-5 font-mono text-sm h-6 flex items-center" style={{ color: "var(--ink-mute)" }}>
+                        <span style={{ color: "var(--ice)" }}>&gt;</span>
+                        <span className="ml-2" style={{ color: "var(--ink-dim)" }}>{text}</span>
+                        <span
+                            className="ml-0.5 inline-block w-[8px] h-4"
+                            style={{ background: "var(--ice)", animation: "pulse-glow 1.2s ease-in-out infinite" }}
+                        />
+                    </p>
+
+                    <div className="hero-stagger mt-10 flex flex-wrap items-center gap-4">
+                        <MagneticButton href="#work" className="btn btn-primary">
+                            View Selected Work
+                            <span aria-hidden="true">→</span>
+                        </MagneticButton>
+                        <MagneticButton href="#contact" className="btn btn-ghost" strength={0.3}>
+                            Get in touch
+                        </MagneticButton>
+                    </div>
                 </div>
             </div>
+
+            {/* Scroll cue */}
+            <a
+                href="#about"
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity"
+            >
+                <span className="label">Scroll</span>
+                <span className="block w-[1px] h-8" style={{ background: "linear-gradient(180deg, var(--ice), transparent)" }} />
+            </a>
         </section>
     );
 }
