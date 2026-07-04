@@ -40,7 +40,7 @@ export default function ClickSpark() {
                 const t = easeOut((now - s.start) / DURATION);
                 const d0 = t * RADIUS;
                 const d1 = d0 + LENGTH * (1 - t);
-                ctx.strokeStyle = `rgba(121, 230, 255, ${1 - t})`;
+                ctx.strokeStyle = `rgba(232, 73, 15, ${1 - t})`;
                 ctx.lineWidth = 1.5;
                 ctx.beginPath();
                 ctx.moveTo(s.x + Math.cos(s.angle) * d0, s.y + Math.sin(s.angle) * d0);

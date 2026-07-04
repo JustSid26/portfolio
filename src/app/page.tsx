@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
-import VelocityMarquee from "@/components/VelocityMarquee";
+import Tape from "@/components/Tape";
 import Projects from "@/components/Projects";
 import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
@@ -19,7 +19,7 @@ export default function Home() {
             <main>
                 <Hero />
                 <About />
-                <VelocityMarquee />
+                <Tape />
                 <Projects />
                 <Skills />
                 <Contact />

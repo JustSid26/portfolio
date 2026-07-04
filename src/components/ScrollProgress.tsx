@@ -28,12 +28,8 @@ export default function ScrollProgress() {
     return (
         <div
             ref={barRef}
-            className="fixed top-0 left-0 right-0 h-[3px] z-[100] origin-left"
-            style={{
-                transform: "scaleX(0)",
-                background: "linear-gradient(90deg, var(--ice), var(--violet))",
-                boxShadow: "0 0 10px rgba(121, 230, 255, 0.35)",
-            }}
+            className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
+            style={{ transform: "scaleX(0)", background: "var(--accent)" }}
         />
     );
 }
