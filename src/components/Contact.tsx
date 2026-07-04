@@ -2,21 +2,19 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const socials = [
-    { label: "GH", href: "https://github.com/JustSid26", title: "GitHub" },
-    { label: "IN", href: "https://www.linkedin.com/in/sid2005/", title: "LinkedIn" },
-    { label: "IG", href: "https://www.instagram.com/_ecs_t_asy_/", title: "Instagram" },
+    { label: "GitHub", handle: "@JustSid26", href: "https://github.com/JustSid26" },
+    { label: "LinkedIn", handle: "in/sid2005", href: "https://www.linkedin.com/in/sid2005/" },
+    { label: "Instagram", handle: "@_ecs_t_asy_", href: "https://www.instagram.com/_ecs_t_asy_/" },
 ];
 
 const EMAIL = "siddharth.l@dizrupt.in";
 
 export default function Contact() {
     const ref = useRef<HTMLElement>(null);
+    const giantRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -28,59 +26,91 @@ export default function Contact() {
                 ease: "power3.out",
                 scrollTrigger: { trigger: ref.current, start: "top 80%", once: true },
             });
+
+            // Giant name drifts sideways as the footer scrolls into view
+            gsap.fromTo(
+                giantRef.current,
+                { xPercent: 6 },
+                {
+                    xPercent: -6,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: giantRef.current,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true,
+                    },
+                }
+            );
         }, ref);
         return () => ctx.revert();
     }, []);
 
     return (
-        <section ref={ref} id="contact" className="section pb-0">
-            <div className="shell text-center">
-                <p className="eyebrow contact-reveal justify-center" style={{ display: "inline-flex" }}>
-                    04 — Contact
-                </p>
+        <section ref={ref} id="contact" className="section pb-0 overflow-hidden">
+            <div className="shell">
+                <div className="grid gap-14 md:grid-cols-[1.2fr_1fr] md:gap-20 items-start">
+                    <div>
+                        <p className="eyebrow contact-reveal">04 — Contact</p>
 
-                <h2
-                    className="contact-reveal mx-auto mt-6 font-bold tracking-tight leading-[1.02]"
-                    style={{ fontSize: "clamp(2.4rem, 7vw, 5.5rem)" }}
-                >
-                    <span className="gradient-heading">Let&apos;s build</span>
-                    <br />
-                    <span className="aurora-text">something good.</span>
-                </h2>
+                        <h2
+                            className="contact-reveal mt-6 font-bold tracking-tight leading-[1.02]"
+                            style={{ fontSize: "clamp(2.4rem, 6vw, 4.6rem)" }}
+                        >
+                            <span className="gradient-heading">Let&apos;s build</span>
+                            <br />
+                            <span className="aurora-text">something good.</span>
+                        </h2>
 
-                <p
-                    className="contact-reveal mx-auto mt-7 max-w-xl text-lg"
-                    style={{ color: "var(--ink-dim)" }}
-                >
-                    Open to internships, collaborations and interesting problems in data,
-                    ML and robotics. The fastest way to reach me is email.
-                </p>
+                        <p
+                            className="contact-reveal mt-7 max-w-xl text-lg"
+                            style={{ color: "var(--ink-dim)" }}
+                        >
+                            Open to internships, collaborations and interesting problems in data,
+                            ML and robotics. The fastest way to reach me is email.
+                        </p>
 
-                <div className="contact-reveal mt-10 flex flex-col items-center gap-6">
-                    <MagneticButton href={`mailto:${EMAIL}`} className="btn btn-primary" strength={0.3}>
-                        {EMAIL}
-                        <span aria-hidden="true">→</span>
-                    </MagneticButton>
+                        <div className="contact-reveal mt-9">
+                            <MagneticButton href={`mailto:${EMAIL}`} className="btn btn-primary" strength={0.3}>
+                                {EMAIL}
+                                <span aria-hidden="true">→</span>
+                            </MagneticButton>
+                        </div>
+                    </div>
 
-                    <div className="flex justify-center gap-3">
+                    <div className="contact-reveal">
+                        <p className="label mb-2">Elsewhere</p>
                         {socials.map((s) => (
                             <a
                                 key={s.label}
                                 href={s.href}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                title={s.title}
-                                aria-label={s.title}
-                                className="social-link"
+                                className="ledger-link"
                             >
-                                {s.label}
+                                <span>{s.label}</span>
+                                <span className="flex items-center gap-3">
+                                    <span className="font-mono text-sm" style={{ color: "var(--ink-mute)" }}>
+                                        {s.handle}
+                                    </span>
+                                    <span className="ledger-arrow" aria-hidden="true">↗</span>
+                                </span>
                             </a>
                         ))}
                     </div>
                 </div>
+            </div>
 
-                <div className="divider contact-reveal mt-24" />
-                <footer className="contact-reveal flex flex-col sm:flex-row items-center justify-between gap-3 py-8">
+            {/* Giant outlined signature */}
+            <div className="mt-24 md:mt-32" aria-hidden="true">
+                <div ref={giantRef} className="footer-giant text-center">
+                    SIDDHARTH&nbsp;LAMA
+                </div>
+            </div>
+
+            <div className="shell">
+                <div className="divider" />
+                <footer className="flex flex-col sm:flex-row items-center justify-between gap-3 py-8">
                     <p className="label">© 2026 Siddharth Lama</p>
                     <p className="label">Built with Next.js · Three.js · GSAP</p>
                     <a href="#hero" className="label link-underline">

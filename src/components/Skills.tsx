@@ -2,9 +2,7 @@
 
 import { ReactNode, useEffect, useRef } from "react";
 import gsap from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import SpotlightCard from "./SpotlightCard";
 
 const skillCategories = [
     {
@@ -312,13 +310,9 @@ export default function Skills() {
                     The stack I reach for
                 </h2>
 
-                <div className="skill-grid mt-16 grid gap-x-10 gap-y-12 md:grid-cols-2">
+                <div className="skill-grid mt-16 grid gap-5 md:grid-cols-2">
                     {skillCategories.map((cat, ci) => (
-                        <div
-                            key={ci}
-                            className="skill-category border-t pt-6"
-                            style={{ borderColor: "var(--line)" }}
-                        >
+                        <SpotlightCard key={ci} className="skill-category p-6">
                             <div className="flex items-baseline gap-3 mb-5">
                                 <span className="font-mono text-xs" style={{ color: "var(--ice)" }}>
                                     {String(ci + 1).padStart(2, "0")}
@@ -339,7 +333,7 @@ export default function Skills() {
                                     </span>
                                 ))}
                             </div>
-                        </div>
+                        </SpotlightCard>
                     ))}
                 </div>
             </div>

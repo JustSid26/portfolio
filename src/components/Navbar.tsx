@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "@/lib/gsap";
+import { APP_READY_EVENT, isAppReady } from "./Preloader";
 
 const sections = [
     { id: "about", label: "About" },
@@ -16,16 +17,23 @@ export default function Navbar() {
     const navRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
         const ctx = gsap.context(() => {
-            gsap.from(".nav-item", {
-                opacity: 0,
-                y: -12,
-                duration: 0.6,
-                stagger: 0.08,
-                ease: "power2.out",
-                delay: 2.6,
-            });
-        });
+            if (!reduced) {
+                gsap.set(".nav-item", { opacity: 0, y: -12 });
+                const play = () =>
+                    gsap.to(".nav-item", {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.6,
+                        stagger: 0.08,
+                        ease: "power2.out",
+                    });
+                if (isAppReady()) play();
+                else window.addEventListener(APP_READY_EVENT, play, { once: true });
+            }
+        }, navRef);
 
         const onScroll = () => setScrolled(window.scrollY > 40);
         window.addEventListener("scroll", onScroll, { passive: true });
@@ -48,6 +56,17 @@ export default function Navbar() {
             observers.forEach((o) => o.disconnect());
         };
     }, []);
+
+    // Decode-on-hover for nav labels
+    const onLinkEnter = (e: React.MouseEvent, label: string) => {
+        const span = (e.currentTarget as HTMLElement).querySelector(".nav-label");
+        if (!span) return;
+        gsap.to(span, {
+            duration: 0.5,
+            scrambleText: { text: label, chars: "01<>/#", speed: 1 },
+            ease: "none",
+        });
+    };
 
     return (
         <nav
@@ -72,6 +91,7 @@ export default function Navbar() {
                         <a
                             key={id}
                             href={`#${id}`}
+                            onMouseEnter={(e) => onLinkEnter(e, label)}
                             className="nav-item group flex items-center gap-1.5 text-sm font-medium transition-colors duration-300"
                             style={{ color: active === id ? "var(--ink)" : "var(--ink-mute)" }}
                         >
@@ -81,7 +101,7 @@ export default function Navbar() {
                             >
                                 0{i + 1}
                             </span>
-                            <span className="link-underline">{label}</span>
+                            <span className="nav-label link-underline">{label}</span>
                         </a>
                     ))}
                 </div>

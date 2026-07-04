@@ -3,51 +3,74 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "@/lib/gsap";
 
-/* First-load preloader: a counter races to 100, then the curtain wipes away. */
+export const APP_READY_EVENT = "app:ready";
+
+function announceReady() {
+    document.documentElement.dataset.appReady = "1";
+    window.dispatchEvent(new Event(APP_READY_EVENT));
+}
+
+/* True once the preloader has finished (or was skipped) — safe to read
+   from effects that may mount after the event already fired. */
+export function isAppReady() {
+    return typeof document !== "undefined" && document.documentElement.dataset.appReady === "1";
+}
+
+/* First-load preloader: a counter races to 100, then the curtain wipes away.
+   Skipped on repeat visits within the same session. Fires `app:ready` when
+   the hero should start animating. */
 export default function Preloader() {
     const [count, setCount] = useState(0);
-    const [done, setDone] = useState(false);
+    // null = undecided (SSR-safe), true = play, false = skip
+    const [show, setShow] = useState<boolean | null>(null);
     const rootRef = useRef<HTMLDivElement>(null);
     const counterRef = useRef<HTMLDivElement>(null);
     const barRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        const seen = sessionStorage.getItem("preloader-seen");
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (seen || reduced) {
+            setShow(false);
+            announceReady();
+            return;
+        }
+        setShow(true);
+        sessionStorage.setItem("preloader-seen", "1");
+    }, []);
+
+    useEffect(() => {
+        if (!show) return;
+
         const obj = { v: 0 };
         const tl = gsap.timeline();
 
         tl.to(obj, {
             v: 100,
-            duration: 2,
-            ease: "power2.inOut",
+            duration: 1.4,
+            ease: "power3.inOut",
             onUpdate: () => setCount(Math.round(obj.v)),
         });
-
-        tl.to(barRef.current, { scaleX: 1, duration: 2, ease: "power2.inOut" }, 0);
-
-        tl.to(counterRef.current, {
-            y: -30,
-            opacity: 0,
-            duration: 0.5,
-            ease: "power2.in",
-        });
-
+        tl.to(barRef.current, { scaleX: 1, duration: 1.4, ease: "power3.inOut" }, 0);
+        tl.to(counterRef.current, { y: -30, opacity: 0, duration: 0.4, ease: "power2.in" });
+        tl.add(announceReady, "-=0.1");
         tl.to(
             rootRef.current,
             {
                 yPercent: -100,
-                duration: 0.9,
+                duration: 0.8,
                 ease: "expo.inOut",
-                onComplete: () => setDone(true),
+                onComplete: () => setShow(false),
             },
-            "-=0.1"
+            "-=0.15"
         );
 
         return () => {
             tl.kill();
         };
-    }, []);
+    }, [show]);
 
-    if (done) return null;
+    if (!show) return null;
 
     return (
         <div ref={rootRef} className="preloader">

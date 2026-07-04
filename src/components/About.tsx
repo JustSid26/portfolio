@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
+import gsap, { SplitText } from "@/lib/gsap";
+import SpotlightCard from "./SpotlightCard";
 
 const pillars = [
     {
@@ -29,9 +27,33 @@ const pillars = [
 
 export default function About() {
     const ref = useRef<HTMLElement>(null);
+    const headlineRef = useRef<HTMLHeadingElement>(null);
 
     useEffect(() => {
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        let split: SplitText | null = null;
+
         const ctx = gsap.context(() => {
+            // Headline words light up one by one as you scroll through them
+            if (!reduced && headlineRef.current) {
+                split = new SplitText(headlineRef.current, {
+                    type: "words",
+                    wordsClass: "word",
+                });
+                headlineRef.current.classList.add("illuminate");
+                gsap.to(split.words, {
+                    opacity: 1,
+                    stagger: 0.06,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: headlineRef.current,
+                        start: "top 78%",
+                        end: "top 30%",
+                        scrub: 0.6,
+                    },
+                });
+            }
+
             gsap.from(".about-reveal", {
                 opacity: 0,
                 y: 40,
@@ -49,18 +71,12 @@ export default function About() {
                 ease: "power3.out",
                 scrollTrigger: { trigger: ".pillar-grid", start: "top 80%", once: true },
             });
-
-            ScrollTrigger.create({
-                trigger: ref.current,
-                start: "top 60%",
-                once: true,
-                onEnter: () =>
-                    document
-                        .querySelectorAll(".keyword-highlight")
-                        .forEach((k) => k.classList.add("active")),
-            });
         }, ref);
-        return () => ctx.revert();
+
+        return () => {
+            ctx.revert();
+            split?.revert();
+        };
     }, []);
 
     return (
@@ -68,20 +84,18 @@ export default function About() {
             <div className="shell">
                 <p className="eyebrow about-reveal">01 — About</p>
 
-                <h2 className="about-reveal section-title max-w-4xl">
-                    Final-year BTech engineer aspiring to be a{" "}
-                    <span className="keyword-highlight">Data Scientist</span>, with a habit of
-                    building things that <span className="keyword-highlight">move</span> in the
-                    real world.
+                <h2 ref={headlineRef} className="section-title max-w-4xl">
+                    Final-year BTech engineer aspiring to be a Data Scientist, with a habit
+                    of building things that move in the real world.
                 </h2>
 
                 <div className="about-reveal mt-8 max-w-2xl space-y-5 text-lg" style={{ color: "var(--ink-dim)" }}>
                     <p>
                         I work across the stack of intelligent systems — from{" "}
-                        <span className="keyword-highlight">machine learning</span> and{" "}
-                        <span className="keyword-highlight">autonomous rovers</span> to full-stack
-                        web apps. I like problems where data, hardware and software have to agree
-                        with each other.
+                        <span style={{ color: "var(--ink)" }}>machine learning</span> and{" "}
+                        <span style={{ color: "var(--ink)" }}>autonomous rovers</span> to
+                        full-stack web apps. I like problems where data, hardware and software
+                        have to agree with each other.
                     </p>
                     <p>
                         My focus right now is sharpening the data-science craft while shipping
@@ -91,7 +105,7 @@ export default function About() {
 
                 <div className="pillar-grid mt-20 grid gap-5 md:grid-cols-3">
                     {pillars.map((p) => (
-                        <div key={p.n} className="pillar card p-7">
+                        <SpotlightCard key={p.n} className="pillar p-7">
                             <span className="font-mono text-sm" style={{ color: "var(--ice)" }}>
                                 {p.n}
                             </span>
@@ -106,7 +120,7 @@ export default function About() {
                                     <span key={t} className="chip">{t}</span>
                                 ))}
                             </div>
-                        </div>
+                        </SpotlightCard>
                     ))}
                 </div>
             </div>
