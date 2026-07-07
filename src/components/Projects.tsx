@@ -311,13 +311,13 @@ const projects: Project[] = [
         year: "2026",
         role: "Dizrupt · AI Intern",
         description:
-            "A production, multi-tenant B2B lead-generation and CRM platform for the diamond trade — discovers and enriches businesses across 123 countries, then runs outreach, invoicing and inventory. Source is proprietary; happy to talk architecture.",
+            "A production, multi-tenant B2B lead-generation and CRM platform for the diamond trade — operating across 123 countries with outreach, invoicing and inventory built in. Source and methods are proprietary.",
         outcomes: [
-            "Cut Google Maps API spend by ~95% via a smarter discovery pipeline",
+            "Cut third-party API spend by ~95% through pipeline optimization",
             "SQLite → PostgreSQL + Redis/BullMQ migration with observability",
             "Multilingual AI outreach with back-translation verification",
         ],
-        stack: ["Node.js", "Express", "PostgreSQL", "Redis", "BullMQ", "OpenAI"],
+        stack: ["Node.js", "Express", "PostgreSQL", "Redis", "BullMQ"],
         figure: <PipelineSchematic />,
         figCaption: "FIG.01 — Discovery & outreach pipeline",
         links: [{ label: "Company", href: "https://www.dizrupt.in/" }],
