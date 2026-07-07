@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+
 import gsap from "@/lib/gsap";
 import { APP_READY_EVENT, isAppReady } from "./Preloader";
 
@@ -13,7 +14,6 @@ const sections = [
 
 export default function Navbar() {
     const [active, setActive] = useState<string>("");
-    const [clock, setClock] = useState("--:--:--");
     const navRef = useRef<HTMLElement>(null);
 
     useEffect(() => {
@@ -35,18 +35,6 @@ export default function Navbar() {
             }
         }, navRef);
 
-        // Live UTC clock — the document is always current
-        const tick = () => {
-            const d = new Date();
-            setClock(
-                [d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds()]
-                    .map((n) => String(n).padStart(2, "0"))
-                    .join(":") + " UTC"
-            );
-        };
-        tick();
-        const clockId = setInterval(tick, 1000);
-
         const observers: IntersectionObserver[] = [];
         sections.forEach(({ id }) => {
             const el = document.getElementById(id);
@@ -61,7 +49,6 @@ export default function Navbar() {
 
         return () => {
             ctx.revert();
-            clearInterval(clockId);
             observers.forEach((o) => o.disconnect());
         };
     }, []);
@@ -112,12 +99,6 @@ export default function Navbar() {
                 </div>
 
                 <div className="nav-item flex items-center gap-4">
-                    <span
-                        className="hidden sm:inline font-mono text-[0.68rem] tracking-[0.12em] tabular-nums"
-                        style={{ color: "var(--ink-mute)" }}
-                    >
-                        {clock}
-                    </span>
                     <a
                         href="#contact"
                         className="inline-flex items-center gap-2 font-mono text-[0.66rem] font-semibold tracking-[0.16em] uppercase px-3 py-1.5 border rounded-[3px] transition-colors duration-300"
