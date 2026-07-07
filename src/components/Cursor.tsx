@@ -2,51 +2,58 @@
 
 import { useEffect, useRef } from "react";
 
-/* A glowing dot + lagging ring that grows over interactive elements. */
+/* Crosshair cursor: full-viewport hairlines meeting at an orange dot,
+   with a mono readout showing live coordinates — or the target's
+   data-cursor label when hovering something interactive. */
 export default function Cursor() {
+    const hRef = useRef<HTMLDivElement>(null);
+    const vRef = useRef<HTMLDivElement>(null);
     const dotRef = useRef<HTMLDivElement>(null);
-    const ringRef = useRef<HTMLDivElement>(null);
+    const readRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        // Only enable on devices with a real pointer
         const canHover = window.matchMedia("(hover: hover) and (pointer: fine)");
         if (!canHover.matches) return;
 
         document.body.classList.add("custom-cursor");
 
+        const h = hRef.current!;
+        const v = vRef.current!;
         const dot = dotRef.current!;
-        const ring = ringRef.current!;
+        const read = readRef.current!;
 
-        let mouseX = window.innerWidth / 2;
-        let mouseY = window.innerHeight / 2;
-        let ringX = mouseX;
-        let ringY = mouseY;
-        let raf = 0;
+        let label: string | null = null;
 
         const onMove = (e: MouseEvent) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            dot.style.transform = `translate(${mouseX}px, ${mouseY}px) translate(-50%, -50%)`;
+            const x = e.clientX;
+            const y = e.clientY;
+            h.style.transform = `translateY(${y}px)`;
+            v.style.transform = `translateX(${x}px)`;
+            dot.style.transform = `translate(${x - 2.5}px, ${y - 2.5}px)`;
+
+            // readout flips to the left/top of the pointer near the edges
+            const flipX = x > window.innerWidth - 170;
+            const flipY = y > window.innerHeight - 60;
+            read.style.transform = `translate(${x + (flipX ? -14 : 14)}px, ${y + (flipY ? -40 : 16)}px) translate(${flipX ? "-100%" : "0"}, 0)`;
+            read.textContent =
+                label ??
+                `X ${String(Math.round(x)).padStart(4, "0")}  Y ${String(Math.round(y)).padStart(4, "0")}`;
         };
 
-        const render = () => {
-            // Ring trails the dot with easing
-            ringX += (mouseX - ringX) * 0.18;
-            ringY += (mouseY - ringY) * 0.18;
-            ring.style.transform = `translate(${ringX}px, ${ringY}px) translate(-50%, -50%)`;
-            raf = requestAnimationFrame(render);
-        };
-        raf = requestAnimationFrame(render);
+        const interactiveSel =
+            'a, button, [role="button"], input, textarea, .chip, .bom-row, [data-cursor]';
 
-        const interactiveSel = 'a, button, [role="button"], input, textarea, .skill-badge, .tilt-card, .chip, .social-link';
         const onOver = (e: Event) => {
-            if ((e.target as HTMLElement).closest(interactiveSel)) {
-                ring.classList.add("is-hovering");
+            const t = (e.target as HTMLElement).closest<HTMLElement>(interactiveSel);
+            if (t) {
+                label = t.dataset.cursor ?? "ENTER ↵";
+                read.classList.add("is-hot");
             }
         };
         const onOut = (e: Event) => {
             if ((e.target as HTMLElement).closest(interactiveSel)) {
-                ring.classList.remove("is-hovering");
+                label = null;
+                read.classList.remove("is-hot");
             }
         };
 
@@ -55,7 +62,6 @@ export default function Cursor() {
         document.addEventListener("mouseout", onOut);
 
         return () => {
-            cancelAnimationFrame(raf);
             window.removeEventListener("mousemove", onMove);
             document.removeEventListener("mouseover", onOver);
             document.removeEventListener("mouseout", onOut);
@@ -65,8 +71,10 @@ export default function Cursor() {
 
     return (
         <>
-            <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
-            <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
+            <div ref={hRef} className="xhair-h" aria-hidden="true" />
+            <div ref={vRef} className="xhair-v" aria-hidden="true" />
+            <div ref={dotRef} className="xhair-dot" aria-hidden="true" />
+            <div ref={readRef} className="xhair-readout" aria-hidden="true" />
         </>
     );
 }

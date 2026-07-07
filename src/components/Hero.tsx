@@ -1,117 +1,217 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import gsap from "@/lib/gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import MagneticButton from "./MagneticButton";
+import { APP_READY_EVENT, isAppReady } from "./Preloader";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const CrystalScene = dynamic(() => import("./three/CrystalScene"), { ssr: false });
+const GyroScene = dynamic(() => import("./three/GyroScene"), { ssr: false });
 
 const roles = [
-    "Data Science",
-    "Machine Learning",
-    "Embedded Systems",
-    "Autonomous Robotics",
+    "DATA SCIENCE",
+    "MACHINE LEARNING",
+    "EMBEDDED SYSTEMS",
+    "AUTONOMOUS ROBOTICS",
 ];
+
+const SCRAMBLE_CHARS = "01<>/#+*";
 
 export default function Hero() {
     const sectionRef = useRef<HTMLElement>(null);
     const nameRef = useRef<HTMLHeadingElement>(null);
+    const roleRef = useRef<HTMLSpanElement>(null);
 
-    const [text, setText] = useState("");
-    const [roleIndex, setRoleIndex] = useState(0);
-    const [phase, setPhase] = useState<"typing" | "pausing" | "deleting">("typing");
-
-    // Typewriter
+    // Entrance (waits for the preloader), role scramble, scroll exit
     useEffect(() => {
-        const current = roles[roleIndex];
-        let t: NodeJS.Timeout;
-        if (phase === "typing") {
-            if (text.length < current.length)
-                t = setTimeout(() => setText(current.slice(0, text.length + 1)), 65);
-            else t = setTimeout(() => setPhase("pausing"), 1400);
-        } else if (phase === "pausing") {
-            t = setTimeout(() => setPhase("deleting"), 300);
-        } else {
-            if (text.length > 0)
-                t = setTimeout(() => setText(current.slice(0, text.length - 1)), 35);
-            else
-                t = setTimeout(() => {
-                    setRoleIndex((p) => (p + 1) % roles.length);
-                    setPhase("typing");
-                }, 120);
-        }
-        return () => clearTimeout(t);
-    }, [text, phase, roleIndex]);
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Entrance + scroll parallax
-    useEffect(() => {
         const ctx = gsap.context(() => {
-            const tl = gsap.timeline({ delay: 2.5 }); // after preloader
             const chars = nameRef.current?.querySelectorAll(".name-char");
-            if (chars) {
-                tl.from(chars, {
-                    yPercent: 120,
+
+            const startRoles = () => {
+                if (!roleRef.current) return;
+                const rolesTl = gsap.timeline({ repeat: -1 });
+                roles.forEach((r) => {
+                    rolesTl
+                        .to(roleRef.current, {
+                            duration: 0.8,
+                            scrambleText: { text: r, chars: SCRAMBLE_CHARS, speed: 0.5 },
+                            ease: "none",
+                        })
+                        .to({}, { duration: 1.7 });
+                });
+            };
+
+            const play = () => {
+                const tl = gsap.timeline();
+                if (chars?.length) {
+                    tl.fromTo(
+                        chars,
+                        { yPercent: 110, opacity: 0 },
+                        {
+                            yPercent: 0,
+                            opacity: 1,
+                            duration: 0.85,
+                            stagger: 0.03,
+                            ease: "expo.out",
+                        }
+                    );
+                }
+                tl.fromTo(
+                    ".hero-stagger",
+                    { opacity: 0, y: 22 },
+                    { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: "power3.out" },
+                    "-=0.5"
+                );
+                tl.fromTo(
+                    ".hero-dim",
+                    { scaleX: 0 },
+                    { scaleX: 1, duration: 0.7, ease: "expo.inOut" },
+                    "-=0.7"
+                );
+                tl.add(startRoles, "-=0.4");
+            };
+
+            if (reduced) {
+                if (roleRef.current) roleRef.current.textContent = roles[0];
+            } else {
+                if (chars?.length) gsap.set(chars, { yPercent: 110, opacity: 0 });
+                gsap.set(".hero-stagger", { opacity: 0, y: 22 });
+                gsap.set(".hero-dim", { scaleX: 0 });
+
+                if (isAppReady()) play();
+                else window.addEventListener(APP_READY_EVENT, play, { once: true });
+
+                gsap.to(".hero-content", {
+                    y: -70,
                     opacity: 0,
-                    rotateX: -80,
-                    duration: 1,
-                    stagger: 0.04,
-                    ease: "expo.out",
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true,
+                    },
                 });
             }
-            tl.from(
-                ".hero-stagger",
-                { opacity: 0, y: 26, duration: 0.8, stagger: 0.12, ease: "power3.out" },
-                "-=0.6"
-            );
-
-            gsap.to(".hero-content", {
-                y: -90,
-                opacity: 0,
-                ease: "none",
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    start: "top top",
-                    end: "bottom top",
-                    scrub: true,
-                },
-            });
         }, sectionRef);
+
         return () => ctx.revert();
     }, []);
 
-    const name = "Siddharth Lama";
+    // "Type pressure": the condensed letters widen near the cursor
+    useEffect(() => {
+        const section = sectionRef.current;
+        const nameEl = nameRef.current;
+        if (!section || !nameEl) return;
+        if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+        const chars = Array.from(nameEl.querySelectorAll<HTMLElement>(".name-char"));
+        if (!chars.length) return;
+
+        const BASE = 72;
+        const MAX = 118;
+        const widths = chars.map(() => ({ current: BASE, target: BASE }));
+        let centers: { x: number; y: number }[] = [];
+        let raf = 0;
+        let active = false;
+
+        const measure = () => {
+            centers = chars.map((c) => {
+                const r = c.getBoundingClientRect();
+                return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+            });
+        };
+
+        const RADIUS = 190;
+        const onMove = (e: PointerEvent) => {
+            if (!centers.length) measure();
+            for (let i = 0; i < chars.length; i++) {
+                const dx = e.clientX - centers[i].x;
+                const dy = e.clientY - centers[i].y;
+                const p = Math.max(0, 1 - Math.hypot(dx, dy) / RADIUS);
+                widths[i].target = BASE + p * (MAX - BASE);
+            }
+            if (!active) {
+                active = true;
+                raf = requestAnimationFrame(tick);
+            }
+        };
+
+        const onLeave = () => widths.forEach((w) => (w.target = BASE));
+
+        const tick = () => {
+            let settled = true;
+            for (let i = 0; i < chars.length; i++) {
+                const w = widths[i];
+                w.current += (w.target - w.current) * 0.16;
+                if (Math.abs(w.target - w.current) > 0.4) settled = false;
+                chars[i].style.fontVariationSettings = `"wdth" ${w.current.toFixed(1)}`;
+            }
+            if (settled) {
+                active = false;
+                return;
+            }
+            raf = requestAnimationFrame(tick);
+        };
+
+        // widths changing shifts glyph positions — re-measure lazily
+        const invalidate = () => {
+            centers = [];
+        };
+
+        section.addEventListener("pointermove", onMove);
+        section.addEventListener("pointerleave", onLeave);
+        window.addEventListener("resize", invalidate);
+        window.addEventListener("scroll", invalidate, { passive: true });
+
+        return () => {
+            cancelAnimationFrame(raf);
+            section.removeEventListener("pointermove", onMove);
+            section.removeEventListener("pointerleave", onLeave);
+            window.removeEventListener("resize", invalidate);
+            window.removeEventListener("scroll", invalidate);
+        };
+    }, []);
 
     return (
         <section
             ref={sectionRef}
             id="hero"
             className="relative min-h-screen flex items-center overflow-hidden"
+            style={{ paddingTop: "var(--topbar-h)" }}
         >
-            {/* 3D crystal, ambient */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-90">
-                <CrystalScene />
+            {/* Gyroscope, right side */}
+            <div
+                className="absolute inset-y-0 right-0 z-0 pointer-events-none w-full md:w-[48%] opacity-40 md:opacity-100"
+                aria-hidden="true"
+            >
+                <GyroScene />
             </div>
 
-            <div className="shell relative z-10">
-                <div className="hero-content max-w-4xl">
-                    <p className="eyebrow hero-stagger mb-6">
-                        Mumbai, India · Available 2026
-                    </p>
+            <div className="shell relative z-10 w-full">
+                <div className="hero-content">
+                    <div className="hero-stagger flex items-baseline justify-between gap-4 mb-8">
+                        <p className="label" style={{ color: "var(--accent-ink)" }}>
+                            FIG.00 — Identity
+                        </p>
+                        <p className="label hidden sm:block">
+                            Mumbai, IN · 19.0760°N 72.8777°E
+                        </p>
+                    </div>
 
                     <h1
                         ref={nameRef}
-                        className="font-bold tracking-tight leading-[0.95]"
-                        style={{ fontSize: "clamp(2.8rem, 9vw, 7.5rem)", perspective: 800 }}
+                        className="display"
+                        style={{ fontSize: "clamp(3.4rem, 12.5vw, 11rem)" }}
                     >
-                        {name.split(" ").map((word, wi) => (
-                            <span key={wi} className="block overflow-hidden">
-                                <span className="inline-block">
+                        {["Siddharth", "Lama"].map((word) => (
+                            <span key={word} className="block overflow-hidden pb-[0.06em]">
+                                <span className="hero-name-word">
                                     {word.split("").map((c, i) => (
-                                        <span key={i} className="name-char inline-block aurora-text">
+                                        <span key={i} className="name-char">
                                             {c}
                                         </span>
                                     ))}
@@ -120,32 +220,55 @@ export default function Hero() {
                         ))}
                     </h1>
 
-                    <p
-                        className="hero-stagger mt-8 max-w-2xl text-xl md:text-2xl leading-relaxed"
-                        style={{ color: "var(--ink-dim)" }}
-                    >
-                        I build systems that{" "}
-                        <span style={{ color: "var(--ink)" }}>sense, decide &amp; act</span> — from
-                        data pipelines and ML models to autonomous rovers.
-                    </p>
+                    <div className="hero-dim dim-line mt-5 max-w-2xl origin-left">
+                        <span className="tick-l" />
+                        Systems that sense, decide &amp; act
+                        <span className="tick-r" />
+                    </div>
 
-                    <p className="hero-stagger mt-5 font-mono text-sm h-6 flex items-center" style={{ color: "var(--ink-mute)" }}>
-                        <span style={{ color: "var(--ice)" }}>&gt;</span>
-                        <span className="ml-2" style={{ color: "var(--ink-dim)" }}>{text}</span>
-                        <span
-                            className="ml-0.5 inline-block w-[8px] h-4"
-                            style={{ background: "var(--ice)", animation: "pulse-glow 1.2s ease-in-out infinite" }}
-                        />
-                    </p>
+                    <div className="mt-10 grid gap-10 md:grid-cols-[1.2fr_1fr] md:gap-16 max-w-4xl">
+                        <div>
+                            <p
+                                className="hero-stagger text-lg md:text-xl leading-relaxed"
+                                style={{ color: "var(--ink-dim)" }}
+                            >
+                                Engineer working the full span of intelligent systems — data
+                                pipelines and ML models to rovers that navigate on their own.
+                            </p>
 
-                    <div className="hero-stagger mt-10 flex flex-wrap items-center gap-4">
-                        <MagneticButton href="#work" className="btn btn-primary">
-                            View Selected Work
-                            <span aria-hidden="true">→</span>
-                        </MagneticButton>
-                        <MagneticButton href="#contact" className="btn btn-ghost" strength={0.3}>
-                            Get in touch
-                        </MagneticButton>
+                            <p
+                                className="hero-stagger mt-5 font-mono text-[0.78rem] tracking-[0.08em] h-6 flex items-center"
+                                style={{ color: "var(--ink-mute)" }}
+                            >
+                                MODE:
+                                <span ref={roleRef} className="ml-2" style={{ color: "var(--accent-ink)" }} />
+                                <span className="blink ml-1" style={{ color: "var(--accent)" }}>▮</span>
+                            </p>
+
+                            <div className="hero-stagger mt-9 flex flex-wrap items-center gap-4">
+                                <MagneticButton href="#work" className="btn btn-primary" strength={0.25}>
+                                    View field records →
+                                </MagneticButton>
+                                <MagneticButton href="#contact" className="btn" strength={0.25}>
+                                    Get in touch
+                                </MagneticButton>
+                            </div>
+                        </div>
+
+                        <dl className="hero-stagger spec self-end hidden md:block">
+                            <div className="spec-row">
+                                <dt>Domain</dt>
+                                <dd>Data / ML · Embedded · Web</dd>
+                            </div>
+                            <div className="spec-row">
+                                <dt>Education</dt>
+                                <dd>BTech, final year</dd>
+                            </div>
+                            <div className="spec-row">
+                                <dt>Status</dt>
+                                <dd style={{ color: "var(--accent-ink)" }}>Available 2026</dd>
+                            </div>
+                        </dl>
                     </div>
                 </div>
             </div>
@@ -153,10 +276,11 @@ export default function Hero() {
             {/* Scroll cue */}
             <a
                 href="#about"
-                className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity"
+                className="absolute bottom-6 right-6 md:right-10 z-10 flex flex-col items-center gap-2 opacity-60 hover:opacity-100 transition-opacity"
+                data-cursor="SEC.01 ↓"
             >
                 <span className="label">Scroll</span>
-                <span className="block w-[1px] h-8" style={{ background: "linear-gradient(180deg, var(--ice), transparent)" }} />
+                <span className="block w-[1px] h-8" style={{ background: "var(--ink-mute)" }} />
             </a>
         </section>
     );

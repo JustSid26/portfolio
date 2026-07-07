@@ -1,19 +1,21 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Archivo, IBM_Plex_Mono } from "next/font/google";
 import ScrollProgress from "@/components/ScrollProgress";
 import SmoothScroll from "@/components/SmoothScroll";
 
-const inter = Inter({
+const archivo = Archivo({
     subsets: ["latin"],
-    variable: "--font-inter",
+    variable: "--font-archivo",
+    axes: ["wdth"],
     display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
+const plexMono = IBM_Plex_Mono({
     subsets: ["latin"],
-    variable: "--font-mono-jb",
+    weight: ["400", "500", "600"],
+    variable: "--font-plex-mono",
     display: "swap",
 });
 
@@ -47,10 +49,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
-        <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+        <html lang="en" className={`${archivo.variable} ${plexMono.variable}`}>
             <body>
-                <div className="bg-aurora" aria-hidden="true" />
-                <div className="bg-grain" aria-hidden="true" />
+                <div className="bg-grid" aria-hidden="true" />
                 <SmoothScroll />
                 <ScrollProgress />
                 {children}
