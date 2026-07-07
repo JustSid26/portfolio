@@ -12,49 +12,6 @@ const socials = [
 
 const EMAIL = "lamasidharth25@gmail.com";
 
-/* A handwritten "Sid" scribble, stroke-only so DrawSVG can sign it. */
-function Signature() {
-    return (
-        <svg viewBox="0 0 220 130" width="190" height="112" fill="none" aria-hidden="true">
-            <path
-                className="sig"
-                d="M20 74 C 52 10, 96 12, 80 40 C 66 64, 26 64, 34 86 C 40 102, 72 94, 94 78"
-                stroke="var(--ink)"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-            />
-            <path
-                className="sig"
-                d="M112 60 C 116 70, 118 80, 121 90"
-                stroke="var(--ink)"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-            />
-            <path
-                className="sig"
-                d="M117 46 C 118 47, 119 48, 119 49"
-                stroke="var(--ink)"
-                strokeWidth="3"
-                strokeLinecap="round"
-            />
-            <path
-                className="sig"
-                d="M172 22 C 166 48, 160 72, 155 92 M 156 66 C 132 58, 126 92, 150 90 C 160 89, 166 76, 172 60"
-                stroke="var(--ink)"
-                strokeWidth="2.4"
-                strokeLinecap="round"
-            />
-            <path
-                className="sig"
-                d="M28 110 C 88 122, 150 104, 202 112"
-                stroke="var(--accent)"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-            />
-        </svg>
-    );
-}
-
 export default function Contact() {
     const ref = useRef<HTMLElement>(null);
     const headRef = useRef<HTMLHeadingElement>(null);
@@ -84,15 +41,6 @@ export default function Contact() {
                     scrollTrigger: { trigger: headRef.current, start: "top 82%", once: true },
                 });
             }
-
-            // The document gets signed as you reach the bottom
-            gsap.from(".sig", {
-                drawSVG: 0,
-                duration: 0.55,
-                stagger: 0.12,
-                ease: "power2.inOut",
-                scrollTrigger: { trigger: ".sig-block", start: "top 85%", once: true },
-            });
 
             gsap.fromTo(
                 giantRef.current,
@@ -153,20 +101,6 @@ export default function Contact() {
                             </MagneticButton>
                         </div>
 
-                        {/* approval block */}
-                        <div className="sig-block contact-reveal mt-16 flex items-end gap-8 flex-wrap">
-                            <div>
-                                <p className="label mb-3">Approved by</p>
-                                <Signature />
-                            </div>
-                            <div className="pb-2">
-                                <p className="label" style={{ color: "var(--ink-dim)" }}>
-                                    Siddharth Lama
-                                </p>
-                                <p className="label mt-1">Mumbai · 2026</p>
-                            </div>
-                            <span className="stamp mb-2">Field-tested</span>
-                        </div>
                     </div>
 
                     <div className="contact-reveal md:pt-24">
