@@ -6,21 +6,21 @@ import gsap, { SplitText } from "@/lib/gsap";
 const modules = [
     {
         n: "M-01",
-        title: "Data & Machine Learning",
-        body: "Turning messy data into decisions — EDA, feature engineering, model training and evaluation across supervised and unsupervised problems.",
-        tools: ["Python", "TensorFlow", "Pandas", "scikit-learn"],
+        title: "Backend & Production Systems",
+        body: "Shipping systems that survive real users — job queues, double-entry ledgers, route optimizers, and the deploys, backups and observability that keep them alive.",
+        tools: ["Node.js", "FastAPI", "PostgreSQL", "Redis", "Docker"],
     },
     {
         n: "M-02",
-        title: "Embedded & Robotics",
-        body: "Bringing software into the physical world — sensor fusion, real-time control and autonomous navigation on constrained hardware.",
-        tools: ["ESP32", "STM32", "ROS", "C++"],
+        title: "AI & LLM Systems",
+        body: "Multi-agent orchestration, structured outputs and AI features that do real work — outreach that writes itself, interviews that adapt, pipelines that classify.",
+        tools: ["OpenAI", "Claude", "Gemini", "Groq"],
     },
     {
         n: "M-03",
-        title: "Full-Stack Engineering",
-        body: "Shipping the whole product — typed APIs, real-time data and polished interfaces that make complex systems usable.",
-        tools: ["Next.js", "Django", "PostgreSQL", "Redis"],
+        title: "Data & Machine Learning",
+        body: "Turning messy data into decisions — EDA, feature engineering, model training and evaluation, from CERN open data to production scoring APIs.",
+        tools: ["Python", "scikit-learn", "XGBoost", "pandas"],
     },
 ];
 
@@ -112,8 +112,8 @@ export default function About() {
                 </div>
 
                 <h2 ref={headlineRef} className="display section-title max-w-5xl">
-                    Final-year BTech engineer aspiring to be a data scientist — with a
-                    habit of building things that move.
+                    Third-year BTech engineer who learns by shipping — production
+                    platforms by day, side projects by night.
                 </h2>
 
                 <div
@@ -121,16 +121,15 @@ export default function About() {
                     style={{ color: "var(--ink-dim)" }}
                 >
                     <p>
-                        I work across the stack of intelligent systems — from{" "}
-                        <Marked>machine learning</Marked> and{" "}
-                        <Marked>autonomous rovers</Marked> to full-stack web apps. I like
-                        problems where data, hardware and software have to agree with each
-                        other.
+                        Currently an AI Intern at Dizrupt, where I&apos;ve built and deployed a{" "}
+                        <Marked>multi-tenant lead-gen platform</Marked>, a payment-gateway
+                        settlement ledger, and a <Marked>vehicle-routing engine</Marked> —
+                        all running in production.
                     </p>
                     <p>
-                        Right now: sharpening the data-science craft while shipping
-                        end-to-end projects that are reliable, fast, and a little bit
-                        delightful.
+                        Before that: a podium at NASA HERC 2025 with Team Mushak&apos;s rover,
+                        a top-15 finish at MumbaiHacks, and heading the coding department
+                        at SPARC, my university&apos;s tech council.
                     </p>
                 </div>
 

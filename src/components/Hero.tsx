@@ -9,9 +9,9 @@ import { APP_READY_EVENT, isAppReady } from "./Preloader";
 const GyroScene = dynamic(() => import("./three/GyroScene"), { ssr: false });
 
 const roles = [
-    "DATA SCIENCE",
+    "FULL-STACK ENGINEERING",
+    "AI & LLM SYSTEMS",
     "MACHINE LEARNING",
-    "EMBEDDED SYSTEMS",
     "AUTONOMOUS ROBOTICS",
 ];
 
@@ -232,8 +232,9 @@ export default function Hero() {
                                 className="hero-stagger text-lg md:text-xl leading-relaxed"
                                 style={{ color: "var(--ink-dim)" }}
                             >
-                                Engineer working the full span of intelligent systems — data
-                                pipelines and ML models to rovers that navigate on their own.
+                                Engineer shipping production systems end to end — AI-driven
+                                platforms, backend infrastructure and ML models, with the
+                                occasional rover on the side.
                             </p>
 
                             <p
@@ -258,15 +259,15 @@ export default function Hero() {
                         <dl className="hero-stagger spec self-end hidden md:block">
                             <div className="spec-row">
                                 <dt>Domain</dt>
-                                <dd>Data / ML · Embedded · Web</dd>
+                                <dd>AI Systems · Backend · Data / ML</dd>
                             </div>
                             <div className="spec-row">
                                 <dt>Education</dt>
-                                <dd>BTech, final year</dd>
+                                <dd>BTech CSE (AI &amp; ML) &apos;28 · 9.38 CGPA</dd>
                             </div>
                             <div className="spec-row">
                                 <dt>Status</dt>
-                                <dd style={{ color: "var(--accent-ink)" }}>Available 2026</dd>
+                                <dd style={{ color: "var(--accent-ink)" }}>AI Intern @ Dizrupt</dd>
                             </div>
                         </dl>
                     </div>

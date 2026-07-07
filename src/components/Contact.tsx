@@ -10,7 +10,7 @@ const socials = [
     { label: "Instagram", handle: "@_ecs_t_asy_", href: "https://www.instagram.com/_ecs_t_asy_/" },
 ];
 
-const EMAIL = "siddharth.l@dizrupt.in";
+const EMAIL = "lamasidharth25@gmail.com";
 
 /* A handwritten "Sid" scribble, stroke-only so DrawSVG can sign it. */
 function Signature() {
@@ -140,7 +140,7 @@ export default function Contact() {
                             style={{ color: "var(--ink-dim)" }}
                         >
                             Open to internships, collaborations and interesting problems in
-                            data, ML and robotics. The fastest way to reach me is email.
+                            software, AI and data. The fastest way to reach me is email.
                         </p>
 
                         <div className="contact-reveal mt-9">

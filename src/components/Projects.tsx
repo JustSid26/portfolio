@@ -22,6 +22,245 @@ type Project = {
 const INK = "var(--ink-dim)";
 const ACCENT = "var(--accent)";
 
+function PipelineSchematic() {
+    return (
+        <svg viewBox="0 0 400 300" fill="none">
+            {/* globe — discovery */}
+            <circle className="sch" cx="80" cy="110" r="44" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M80 66 C 104 88, 104 132, 80 154" stroke={INK} strokeWidth="1" />
+            <path className="sch" d="M80 66 C 56 88, 56 132, 80 154" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="40" y1="110" x2="120" y2="110" stroke={INK} strokeWidth="1" />
+            {/* arrow to enrich */}
+            <line className="sch" x1="128" y1="110" x2="158" y2="110" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M150 103 L 158 110 L 150 117" stroke={INK} strokeWidth="1.5" />
+            {/* enrich box */}
+            <rect className="sch" x="162" y="88" width="84" height="44" stroke={INK} strokeWidth="1.5" />
+            {/* arrow to outreach */}
+            <line className="sch" x1="250" y1="110" x2="278" y2="110" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M270 103 L 278 110 L 270 117" stroke={INK} strokeWidth="1.5" />
+            {/* outreach box — accent */}
+            <rect className="sch" x="282" y="88" width="96" height="44" stroke={ACCENT} strokeWidth="1.5" />
+            {/* queue cylinder under enrich */}
+            <line className="sch" x1="204" y1="132" x2="204" y2="168" stroke={INK} strokeWidth="1" />
+            <ellipse className="sch" cx="204" cy="180" rx="34" ry="10" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="170" y1="180" x2="170" y2="216" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="238" y1="180" x2="238" y2="216" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M170 216 A 34 10 0 0 0 238 216" stroke={INK} strokeWidth="1.5" />
+            <text className="sch-label" x="36" y="48" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                123 COUNTRIES
+            </text>
+            <text className="sch-label" x="174" y="114" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                ENRICH
+            </text>
+            <text className="sch-label" x="292" y="114" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                OUTREACH
+            </text>
+            <text className="sch-label" x="168" y="246" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                JOB QUEUE
+            </text>
+        </svg>
+    );
+}
+
+function RouteSchematic() {
+    return (
+        <svg viewBox="0 0 400 300" fill="none">
+            {/* faint map grid */}
+            {[80, 140, 200].map((y) => (
+                <line key={y} className="sch" x1="40" y1={y} x2="368" y2={y} stroke={INK} strokeWidth="0.5" strokeDasharray="2 8" />
+            ))}
+            {[120, 220, 320].map((x) => (
+                <line key={x} className="sch" x1={x} y1="44" x2={x} y2="256" stroke={INK} strokeWidth="0.5" strokeDasharray="2 8" />
+            ))}
+            {/* depot */}
+            <rect className="sch" x="58" y="196" width="28" height="28" stroke={ACCENT} strokeWidth="1.5" />
+            {/* optimized tour */}
+            <path
+                className="sch"
+                d="M86 200 L140 84 L224 62 L302 112 L330 190 L250 232 L150 164 L86 210"
+                stroke={ACCENT}
+                strokeWidth="1.8"
+            />
+            {/* stops */}
+            {[
+                [140, 84],
+                [224, 62],
+                [302, 112],
+                [330, 190],
+                [250, 232],
+                [150, 164],
+            ].map(([cx, cy]) => (
+                <circle key={`${cx}-${cy}`} className="sch" cx={cx} cy={cy} r="7" stroke={INK} strokeWidth="1.5" />
+            ))}
+            <text className="sch-label" x="48" y="246" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                DEPOT
+            </text>
+            <text className="sch-label" x="292" y="48" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                CVRP
+            </text>
+        </svg>
+    );
+}
+
+function AgentsSchematic() {
+    return (
+        <svg viewBox="0 0 400 300" fill="none">
+            {/* mic */}
+            <rect className="sch" x="58" y="72" width="44" height="78" rx="22" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M44 128 A 36 36 0 0 0 116 128" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="80" y1="164" x2="80" y2="186" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="58" y1="186" x2="102" y2="186" stroke={INK} strokeWidth="1.5" />
+            {/* waveform */}
+            <path
+                className="sch"
+                d="M128 128 L138 128 L146 100 L156 156 L166 88 L176 168 L186 108 L196 148 L206 118 L216 138 L226 128 L238 128"
+                stroke={ACCENT}
+                strokeWidth="1.8"
+            />
+            {/* arrow into orchestrator */}
+            <line className="sch" x1="238" y1="128" x2="262" y2="128" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M254 121 L 262 128 L 254 135" stroke={INK} strokeWidth="1.5" />
+            {/* agent boxes */}
+            <rect className="sch" x="270" y="48" width="96" height="40" stroke={INK} strokeWidth="1.5" />
+            <rect className="sch" x="270" y="108" width="96" height="40" stroke={ACCENT} strokeWidth="1.5" />
+            <rect className="sch" x="270" y="168" width="96" height="40" stroke={INK} strokeWidth="1.5" />
+            {/* connectors */}
+            <line className="sch" x1="262" y1="128" x2="270" y2="68" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="262" y1="128" x2="270" y2="128" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="262" y1="128" x2="270" y2="188" stroke={INK} strokeWidth="1" />
+            <text className="sch-label" x="278" y="72" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                INTERVIEWER
+            </text>
+            <text className="sch-label" x="282" y="132" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                EVALUATOR
+            </text>
+            <text className="sch-label" x="294" y="192" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                COACH
+            </text>
+            <text className="sch-label" x="128" y="90" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                Q&amp;A LOOP
+            </text>
+        </svg>
+    );
+}
+
+function AppSchematic() {
+    return (
+        <svg viewBox="0 0 400 300" fill="none">
+            {/* TMDb feed */}
+            <rect className="sch" x="42" y="104" width="72" height="32" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="114" y1="120" x2="146" y2="120" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M138 113 L 146 120 L 138 127" stroke={INK} strokeWidth="1.5" />
+            {/* phone */}
+            <rect className="sch" x="150" y="40" width="110" height="220" rx="18" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="150" y1="70" x2="260" y2="70" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="150" y1="228" x2="260" y2="228" stroke={INK} strokeWidth="1" />
+            {/* posters */}
+            <rect className="sch" x="162" y="82" width="40" height="58" stroke={INK} strokeWidth="1.5" />
+            <rect className="sch" x="210" y="82" width="40" height="58" stroke={INK} strokeWidth="1.5" />
+            {/* stats bars */}
+            <line className="sch" x1="162" y1="214" x2="250" y2="214" stroke={INK} strokeWidth="1" />
+            <rect className="sch" x="166" y="182" width="14" height="32" stroke={INK} strokeWidth="1.5" />
+            <rect className="sch" x="188" y="168" width="14" height="46" stroke={INK} strokeWidth="1.5" />
+            <rect className="sch" x="210" y="188" width="14" height="26" stroke={INK} strokeWidth="1.5" />
+            <rect className="sch" x="232" y="156" width="14" height="58" stroke={ACCENT} strokeWidth="1.5" />
+            {/* on-device recs loop */}
+            <path className="sch" d="M292 96 A 40 40 0 1 1 292 176" stroke={ACCENT} strokeWidth="1.5" />
+            <path className="sch" d="M285 168 L 292 176 L 300 170" stroke={ACCENT} strokeWidth="1.5" />
+            <text className="sch-label" x="46" y="96" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                TMDB API
+            </text>
+            <text className="sch-label" x="290" y="60" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                ON-DEVICE
+            </text>
+            <text className="sch-label" x="298" y="140" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                RECS
+            </text>
+        </svg>
+    );
+}
+
+function ContractSchematic() {
+    return (
+        <svg viewBox="0 0 400 300" fill="none">
+            {/* source document with folded corner */}
+            <path className="sch" d="M70 50 H160 L190 80 V210 H70 Z" stroke={INK} strokeWidth="1.5" />
+            <path className="sch" d="M160 50 V80 H190" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="84" y1="104" x2="176" y2="104" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="84" y1="124" x2="176" y2="124" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="84" y1="144" x2="176" y2="144" stroke={ACCENT} strokeWidth="1.5" />
+            <line className="sch" x1="84" y1="164" x2="176" y2="164" stroke={INK} strokeWidth="1" />
+            {/* magnifier over flagged line */}
+            <circle className="sch" cx="176" cy="144" r="22" stroke={ACCENT} strokeWidth="1.5" />
+            <line className="sch" x1="192" y1="160" x2="214" y2="182" stroke={ACCENT} strokeWidth="1.5" />
+            {/* AST tree */}
+            <circle className="sch" cx="300" cy="70" r="9" stroke={INK} strokeWidth="1.5" />
+            <circle className="sch" cx="266" cy="140" r="9" stroke={INK} strokeWidth="1.5" />
+            <circle className="sch" cx="334" cy="140" r="9" stroke={INK} strokeWidth="1.5" />
+            <circle className="sch" cx="248" cy="206" r="9" stroke={ACCENT} strokeWidth="1.5" />
+            <circle className="sch" cx="290" cy="206" r="9" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="296" y1="78" x2="270" y2="131" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="305" y1="78" x2="330" y2="131" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="262" y1="148" x2="250" y2="197" stroke={INK} strokeWidth="1" />
+            <line className="sch" x1="272" y1="148" x2="286" y2="197" stroke={INK} strokeWidth="1" />
+            <text className="sch-label" x="70" y="40" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                SOLIDITY SRC
+            </text>
+            <text className="sch-label" x="320" y="44" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                AST
+            </text>
+            <text className="sch-label" x="224" y="242" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                FLAGGED NODE
+            </text>
+        </svg>
+    );
+}
+
+function SignalSchematic() {
+    return (
+        <svg viewBox="0 0 400 300" fill="none">
+            {/* axes */}
+            <line className="sch" x1="52" y1="30" x2="52" y2="252" stroke={INK} strokeWidth="1.5" />
+            <line className="sch" x1="52" y1="252" x2="368" y2="252" stroke={INK} strokeWidth="1.5" />
+            {[70, 115, 160, 205].map((y) => (
+                <line key={y} className="sch" x1="46" y1={y} x2="52" y2={y} stroke={INK} strokeWidth="1" />
+            ))}
+            {/* background events — x marks */}
+            {[
+                [92, 210], [120, 188], [104, 156], [150, 214], [166, 176], [138, 132], [196, 200], [214, 164],
+            ].map(([x, y]) => (
+                <g key={`${x}-${y}`}>
+                    <line className="sch" x1={x - 6} y1={y - 6} x2={x + 6} y2={y + 6} stroke={INK} strokeWidth="1.2" />
+                    <line className="sch" x1={x + 6} y1={y - 6} x2={x - 6} y2={y + 6} stroke={INK} strokeWidth="1.2" />
+                </g>
+            ))}
+            {/* signal events — circles */}
+            {[
+                [232, 96], [262, 120], [284, 76], [306, 108], [330, 62], [344, 96], [300, 52],
+            ].map(([cx, cy]) => (
+                <circle key={`${cx}-${cy}`} className="sch" cx={cx} cy={cy} r="6" stroke={ACCENT} strokeWidth="1.5" />
+            ))}
+            {/* decision boundary */}
+            <path
+                className="sch"
+                d="M96 60 C 160 96, 210 160, 244 244"
+                stroke={ACCENT}
+                strokeWidth="1.5"
+                strokeDasharray="6 5"
+            />
+            <text className="sch-label" x="296" y="34" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                SIGNAL
+            </text>
+            <text className="sch-label" x="86" y="246" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                BACKGROUND
+            </text>
+            <text className="sch-label" x="60" y="26" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
+                28 FEATURES
+            </text>
+        </svg>
+    );
+}
+
 function RoverSchematic() {
     return (
         <svg viewBox="0 0 400 300" fill="none">
@@ -65,155 +304,125 @@ function RoverSchematic() {
     );
 }
 
-function FinanceSchematic() {
-    return (
-        <svg viewBox="0 0 400 300" fill="none">
-            {/* axes */}
-            <line className="sch" x1="52" y1="30" x2="52" y2="252" stroke={INK} strokeWidth="1.5" />
-            <line className="sch" x1="52" y1="252" x2="368" y2="252" stroke={INK} strokeWidth="1.5" />
-            {/* y ticks */}
-            {[70, 115, 160, 205].map((y) => (
-                <line key={y} className="sch" x1="46" y1={y} x2="52" y2={y} stroke={INK} strokeWidth="1" />
-            ))}
-            {/* candles */}
-            {[
-                { x: 84, top: 150, bot: 215, wt: 135, wb: 228 },
-                { x: 124, top: 165, bot: 205, wt: 150, wb: 218 },
-                { x: 164, top: 130, bot: 185, wt: 118, wb: 198 },
-                { x: 204, top: 145, bot: 190, wt: 132, wb: 202 },
-                { x: 244, top: 105, bot: 160, wt: 92, wb: 172 },
-            ].map((c) => (
-                <g key={c.x}>
-                    <line className="sch" x1={c.x + 8} y1={c.wt} x2={c.x + 8} y2={c.wb} stroke={INK} strokeWidth="1" />
-                    <rect className="sch" x={c.x} y={c.top} width="16" height={c.bot - c.top} stroke={INK} strokeWidth="1.5" />
-                </g>
-            ))}
-            {/* forecast line */}
-            <path
-                className="sch"
-                d="M60 210 C 110 195, 150 175, 200 160 S 300 105, 356 68"
-                stroke={ACCENT}
-                strokeWidth="2"
-            />
-            <path className="sch" d="M344 64 L 356 68 L 349 79" stroke={ACCENT} strokeWidth="2" />
-            {/* confidence band */}
-            <path
-                className="sch"
-                d="M262 118 C 300 96, 330 76, 356 52"
-                stroke={ACCENT}
-                strokeWidth="1"
-                strokeDasharray="4 5"
-            />
-            <path
-                className="sch"
-                d="M262 138 C 300 122, 332 104, 356 88"
-                stroke={ACCENT}
-                strokeWidth="1"
-                strokeDasharray="4 5"
-            />
-            <text className="sch-label" x="284" y="44" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
-                FORECAST
-            </text>
-            <text className="sch-label" x="60" y="26" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
-                SPEND / T
-            </text>
-        </svg>
-    );
-}
-
-function VoiceSchematic() {
-    return (
-        <svg viewBox="0 0 400 300" fill="none">
-            {/* mic */}
-            <rect className="sch" x="58" y="72" width="44" height="78" rx="22" stroke={INK} strokeWidth="1.5" />
-            <path className="sch" d="M44 128 A 36 36 0 0 0 116 128" stroke={INK} strokeWidth="1.5" />
-            <line className="sch" x1="80" y1="164" x2="80" y2="186" stroke={INK} strokeWidth="1.5" />
-            <line className="sch" x1="58" y1="186" x2="102" y2="186" stroke={INK} strokeWidth="1.5" />
-            {/* waveform */}
-            <path
-                className="sch"
-                d="M128 128 L138 128 L146 100 L156 156 L166 88 L176 168 L186 108 L196 148 L206 118 L216 138 L226 128 L238 128"
-                stroke={ACCENT}
-                strokeWidth="1.8"
-            />
-            {/* arrow into pipeline */}
-            <line className="sch" x1="238" y1="128" x2="262" y2="128" stroke={INK} strokeWidth="1.5" />
-            <path className="sch" d="M254 121 L 262 128 L 254 135" stroke={INK} strokeWidth="1.5" />
-            {/* orchestration boxes */}
-            <rect className="sch" x="270" y="48" width="96" height="40" stroke={INK} strokeWidth="1.5" />
-            <rect className="sch" x="270" y="108" width="96" height="40" stroke={ACCENT} strokeWidth="1.5" />
-            <rect className="sch" x="270" y="168" width="96" height="40" stroke={INK} strokeWidth="1.5" />
-            {/* connectors */}
-            <line className="sch" x1="262" y1="128" x2="270" y2="68" stroke={INK} strokeWidth="1" />
-            <line className="sch" x1="262" y1="128" x2="270" y2="128" stroke={INK} strokeWidth="1" />
-            <line className="sch" x1="262" y1="128" x2="270" y2="188" stroke={INK} strokeWidth="1" />
-            <text className="sch-label" x="282" y="72" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
-                INTENT
-            </text>
-            <text className="sch-label" x="282" y="132" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
-                TOOLS/API
-            </text>
-            <text className="sch-label" x="282" y="192" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
-                SPEECH OUT
-            </text>
-            <text className="sch-label" x="128" y="90" fontSize="9" letterSpacing="2" fill={INK} fontFamily="var(--font-mono)">
-                48 KHZ
-            </text>
-        </svg>
-    );
-}
-
 const projects: Project[] = [
     {
         index: "REC.01",
-        title: "Mantis Rover",
-        year: "2025",
-        role: "Autonomous Systems · Embedded",
+        title: "Lead Engine",
+        year: "2026",
+        role: "Dizrupt · AI Intern",
         description:
-            "An autonomous rover for competitive robotics — real-time obstacle avoidance, GPS waypoint navigation, and a live telemetry stream to a ground station.",
+            "A production, multi-tenant B2B lead-generation and CRM platform for the diamond trade — discovers and enriches businesses across 123 countries, then runs outreach, invoicing and inventory. Source is proprietary; happy to talk architecture.",
         outcomes: [
-            "Sensor-fusion pipeline for stable navigation on rough terrain",
-            "Sub-second telemetry over a custom radio link",
-            "Modular firmware that survives field debugging",
+            "Cut Google Maps API spend by ~95% via a smarter discovery pipeline",
+            "SQLite → PostgreSQL + Redis/BullMQ migration with observability",
+            "Multilingual AI outreach with back-translation verification",
         ],
-        stack: ["ESP32", "Arduino", "Python", "ROS"],
-        figure: <RoverSchematic />,
-        figCaption: "FIG.01 — Chassis & sensor layout",
-        links: [{ label: "Source", href: "https://github.com/JustSid26" }],
+        stack: ["Node.js", "Express", "PostgreSQL", "Redis", "BullMQ", "OpenAI"],
+        figure: <PipelineSchematic />,
+        figCaption: "FIG.01 — Discovery & outreach pipeline",
+        links: [{ label: "Company", href: "https://www.dizrupt.in/" }],
     },
     {
         index: "REC.02",
-        title: "AI Finance Advisor",
-        year: "2025",
-        role: "Full-Stack · Machine Learning",
+        title: "RouteCast",
+        year: "2026",
+        role: "Full-Stack · Optimization",
         description:
-            "A financial advisor that reads spending patterns, forecasts trends, and gives personalized savings recommendations — wrapped in a clean, typed web app.",
+            "A three-service vehicle-routing platform — upload delivery stops and a fleet, get capacity-aware optimized routes on a map, with multi-depot support and priority weighting.",
         outcomes: [
-            "Forecasting models surfaced as plain-language advice",
-            "End-to-end typed stack from model to UI",
-            "Interactive dashboards for spend breakdowns",
+            "Google OR-Tools CVRP solver behind a FastAPI microservice",
+            "PostGIS-backed geo storage with travel-time matrices",
+            "Usual-vs-optimized route comparison with CSV export",
         ],
-        stack: ["Next.js", "Python", "TensorFlow", "PostgreSQL"],
-        figure: <FinanceSchematic />,
-        figCaption: "FIG.02 — Spend series & forecast",
-        links: [{ label: "Source", href: "https://github.com/JustSid26" }],
+        stack: ["Next.js", "TypeScript", "Express", "FastAPI", "OR-Tools", "PostGIS"],
+        figure: <RouteSchematic />,
+        figCaption: "FIG.02 — Optimized tour over stops",
+        links: [{ label: "Source", href: "https://github.com/JustSid26/route-cast" }],
     },
     {
         index: "REC.03",
-        title: "Voice Agent",
-        year: "2024",
-        role: "Applied ML · Backend",
+        title: "Mock Interview AI",
+        year: "2026",
+        role: "Applied AI · Agents",
         description:
-            "A conversational voice agent that understands natural speech and automates real-world tasks by orchestrating multiple APIs behind the scenes.",
+            "A multi-agent interview coach — Interviewer, Evaluator and Coach agents run adaptive interviews through a rule-based orchestrator speaking structured JSON contracts.",
         outcomes: [
-            "Speech-to-intent pipeline with low latency",
-            "Pluggable tool/API orchestration layer",
-            "Containerized for one-command deploys",
+            "Adaptive difficulty with probing follow-ups on weak answers",
+            "Scoring across 8 dimensions with PDF feedback reports",
+            "Behavioral test transcripts: strong, weak & trick candidates",
         ],
-        stack: ["Flask", "Whisper", "LLMs", "Docker"],
-        figure: <VoiceSchematic />,
-        figCaption: "FIG.03 — Signal path & orchestration",
-        links: [{ label: "Source", href: "https://github.com/JustSid26" }],
+        stack: ["Python", "Groq", "Streamlit"],
+        figure: <AgentsSchematic />,
+        figCaption: "FIG.03 — Agent orchestration loop",
+        links: [{ label: "Source", href: "https://github.com/JustSid26/mock-interview-ai" }],
+    },
+    {
+        index: "REC.04",
+        title: "Watched",
+        year: "2026",
+        role: "iOS · SwiftUI",
+        description:
+            "A native iOS movie & TV tracker — ~6,800 lines of Swift blending Letterboxd-style logging with release tracking, statistics and on-device recommendations.",
+        outcomes: [
+            "TMDb integration with a transparent offline mock fallback",
+            "Actor-based two-tier image cache (NSCache + URLCache)",
+            "Release notifications and a Swift Charts stats dashboard",
+        ],
+        stack: ["Swift", "SwiftUI", "SwiftData", "MVVM"],
+        figure: <AppSchematic />,
+        figCaption: "FIG.04 — App data flow & stats",
+        links: [{ label: "Source", href: "https://github.com/JustSid26/watched" }],
+    },
+    {
+        index: "REC.05",
+        title: "Contract Validator",
+        year: "2026",
+        role: "Systems · Rust",
+        description:
+            "A multi-chain smart-contract analysis tool — parses Solidity ASTs to flag vulnerability patterns and validates CosmWasm and Solana eBPF bytecode.",
+        outcomes: [
+            "Solidity AST checks — tx.origin auth and friends",
+            "CosmWasm & Solana eBPF bytecode validation",
+            "Rust backend on axum/tokio with a Next.js frontend",
+        ],
+        stack: ["Rust", "axum", "tokio", "Next.js"],
+        figure: <ContractSchematic />,
+        figCaption: "FIG.05 — Source scan & AST walk",
+        links: [{ label: "Source", href: "https://github.com/JustSid26/SmartContract" }],
+    },
+    {
+        index: "REC.06",
+        title: "Higgs Detection",
+        year: "2026",
+        role: "Machine Learning",
+        description:
+            "Classifying Higgs-signal events against background noise on CERN ATLAS open data — 28 kinematic features, three model families, served as a web app.",
+        outcomes: [
+            "LogReg / SVM / gradient boosting compared by ROC AUC",
+            "Flask JSON API with batch CSV scoring",
+            "Physics-annotated UI for single-event classification",
+        ],
+        stack: ["Python", "scikit-learn", "XGBoost", "Flask"],
+        figure: <SignalSchematic />,
+        figCaption: "FIG.06 — Signal vs background split",
+        links: [{ label: "Source", href: "https://github.com/JustSid26/HiggsBosonDetectionML" }],
+    },
+    {
+        index: "REC.07",
+        title: "Mantis Rover",
+        year: "2025",
+        role: "Robotics · NASA HERC",
+        description:
+            "Team Mushak's rover for the NASA Human Exploration Rover Challenge 2025 — rebuilt the electronics, PCB and control code. 3rd place, RC Division.",
+        outcomes: [
+            "Custom PCB with ESP32 wireless controller comms",
+            "Motor-driver control with encoded path visualization",
+            "Podium finish against international teams",
+        ],
+        stack: ["ESP32", "Arduino", "C++", "Python"],
+        figure: <RoverSchematic />,
+        figCaption: "FIG.07 — Chassis & sensor layout",
+        links: [{ label: "Source", href: "https://github.com/JustSid26/mushak" }],
     },
 ];
 
@@ -290,7 +499,7 @@ function EndPanel() {
         <article className="work-panel" style={{ width: "min(480px, 80vw)" }}>
             <div className="record">
                 <div className="record__head">
-                    <span className="rec-no">REC.04+</span>
+                    <span className="rec-no">REC.08+</span>
                     <span>Archive</span>
                 </div>
                 <div className="flex flex-col items-start justify-center gap-6 p-8 md:p-10 flex-1">
