@@ -129,7 +129,7 @@ export default function About() {
                     <p>
                         Before that: a podium at NASA HERC 2025 with Team Mushak&apos;s rover,
                         a top-15 finish at MumbaiHacks, and heading the coding department
-                        at SPARC, my university&apos;s tech council.
+                        at S.P.A.R.C Society, my university&apos;s student-led tech club.
                     </p>
                 </div>
 

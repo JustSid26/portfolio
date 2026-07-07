@@ -263,7 +263,7 @@ export default function Hero() {
                             </div>
                             <div className="spec-row">
                                 <dt>Education</dt>
-                                <dd>BTech CSE (AI &amp; ML) &apos;28 · 9.38 CGPA</dd>
+                                <dd>BTech CS (AI &amp; ML) &apos;28 · 9.38 CGPA</dd>
                             </div>
                             <div className="spec-row">
                                 <dt>Status</dt>
