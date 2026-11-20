@@ -3,14 +3,22 @@ import { Archivo, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Experience } from "@/components/Experience";
 import { Analytics } from "@/components/Analytics";
+import { site } from "@/content/projects";
 
 const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--f-archivo", display: "swap" });
 const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--f-jetbrains", display: "swap" });
 
+const title = "Siddharth Lama — Builds things that ship";
+const description =
+  "Siddharth Lama builds production websites, WebGL and product for real brands at Dizrupt, plus his own tools.";
+
 export const metadata: Metadata = {
-  title: "Siddharth Lama — Builds things that ship",
-  description:
-    "Siddharth Lama builds production websites, WebGL and product for real brands at Dizrupt, plus his own tools.",
+  metadataBase: new URL(site.url),
+  title,
+  description,
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", url: "/", siteName: site.name, locale: "en_IN", title, description },
+  twitter: { card: "summary", title, description },
 };
 
 export const viewport: Viewport = {

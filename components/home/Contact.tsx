@@ -71,7 +71,7 @@ export function Contact() {
           </a>
         </div>
         <ul className="flex gap-5 md:col-span-3">
-          {site.socials.map((s) => (
+          {site.socials.filter((s) => s.href !== "#").map((s) => (
             <li key={s.label}>
               <Magnetic strength={0.5}>
                 <a href={s.href} className="link-line inline-block" target="_blank" rel="noreferrer">

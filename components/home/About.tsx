@@ -47,7 +47,6 @@ export function About() {
   const blocks = [
     { k: "Studying", v: site.about.studying },
     { k: "At Dizrupt", v: site.about.dizrupt },
-    { k: "Next", v: site.about.next },
   ];
 
   return (

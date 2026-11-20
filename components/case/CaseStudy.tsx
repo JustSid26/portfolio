@@ -170,7 +170,7 @@ export function CaseStudy({ index }: { index: number }) {
             <SplitReveal as="p" className="t-display mt-4" style={{ fontSize: "var(--step-3)" }}>
               {p.role}
             </SplitReveal>
-            <p className="t-meta mt-4 muted">PLACEHOLDER — list the specific pieces you owned, in one or two lines.</p>
+            {p.owned && <p className="t-meta mt-4 muted">{p.owned}</p>}
           </section>
 
           {p.stats && (
@@ -190,14 +190,18 @@ export function CaseStudy({ index }: { index: number }) {
           )}
 
           <section>
-            <h2 className="t-meta muted">Stack</h2>
-            <ul className="mt-4 flex flex-wrap gap-2 t-meta">
-              {p.stack?.map((s) => (
-                <li key={s} className="pill">
-                  {s}
-                </li>
-              ))}
-            </ul>
+            {p.stack?.length ? (
+              <>
+                <h2 className="t-meta muted">Stack</h2>
+                <ul className="mt-4 flex flex-wrap gap-2 t-meta">
+                  {p.stack.map((s) => (
+                    <li key={s} className="pill">
+                      {s}
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
             {p.link !== "#" && (
               <Magnetic className="mt-8">
                 <a href={p.link} target="_blank" rel="noreferrer" className="pill t-meta" data-cursor="link">

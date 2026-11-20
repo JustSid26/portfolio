@@ -25,7 +25,8 @@ export type Project = {
   // Optional extras used by case-study pages
   accent?: string;
   overview?: string;
-  stack?: string[];
+  owned?: string; // one or two lines on the specific pieces you owned — hidden until set
+  stack?: string[]; // hidden until set
   stats?: Stat[];
 };
 
@@ -44,7 +45,6 @@ export const projects: Project[] = [
     accent: "#8FD8FF",
     overview:
       "Type a brief like “Find diamond jewelers in Krakow” and Eternity AI finds and scores the leads, builds a contact list, drafts an email per lead and, when one converts, raises the invoice — all from the same record.",
-    stack: ["PLACEHOLDER — your stack"],
     stats: [
       { value: 1, label: "Sentence to start a campaign" },
       { value: 4, label: "Steps: find → contact → email → invoice" },
@@ -65,7 +65,6 @@ export const projects: Project[] = [
     accent: "#6E8BFF",
     overview:
       "Processor CSVs and settlement workbooks go in; every transaction is posted as balanced double-entry events, and live invariant checks run directly against the ledger — append-only, idempotent, and provably balanced.",
-    stack: ["PLACEHOLDER — your stack"],
     stats: [
       { value: 4, label: "Ledger invariants checked live" },
       { value: 0, label: "Updates or deletes allowed — append-only" },
@@ -86,7 +85,6 @@ export const projects: Project[] = [
     accent: "#9B8CFF",
     overview:
       "DataBench runs ingest → schema → profile → recommend → train. Every column is classified with the reason it was kept or dropped, problems are written for a human rather than a log file, and models are ranked for the dataset's actual size and shape.",
-    stack: ["PLACEHOLDER — your stack"],
     stats: [
       { value: 5, label: "Pipeline stages, ingest to train" },
       { value: 156, suffix: "ms", label: "To read a 1M-row CSV (demo)" },
@@ -107,7 +105,6 @@ export const projects: Project[] = [
     accent: "#DCE4EE",
     overview:
       "Notes are real files — the filesystem is the source of truth. Solve problems in Java and accepted submissions log themselves; errors come back with a line number and a plain sentence, and you can step through code line by line with variables beside it.",
-    stack: ["PLACEHOLDER — your stack"],
     stats: [
       { value: 1, label: "Place for notes, timetable and practice" },
       { value: 21, prefix: "JDK ", label: "Run and visualise Java in-app" },
@@ -124,26 +121,26 @@ export const projectIndex = (slug: string) => projects.findIndex((p) => p.slug =
 export const site = {
   name: "Siddharth Lama",
   short: "SL",
-  email: "hello@PLACEHOLDER.com",
+  url: "https://www.sidlama.com",
+  email: "lamasidharth25@gmail.com",
   headline: ["Siddharth", "Lama"],
   tagline: "Builds things that ship.",
   intro:
     "Third-year BTech. Shipping production sites and campaigns for real brands at Dizrupt, plus my own products on the side.",
   about: {
-    studying: "PLACEHOLDER — BTech in Computer Engineering, third year, at your college.",
+    studying: "BTech in Computer Science, third year, at ATLAS SkillTech University.",
     dizrupt:
       "At Dizrupt, a Mumbai digital marketing agency and product incubator, I build the web side of campaigns and products: landing pages, dashboards, brand sites, and the motion that makes them feel alive.",
-    next: "PLACEHOLDER — What you want to build next. One confident sentence.",
   },
   marquee: ["Frontend", "WebGL", "Motion", "Product", "Next.js", "Three.js", "GSAP", "Shipping"],
   // Languages & tools — they drive in and out of the SL HQ as labelled trucks. Edit freely.
   tools: ["TypeScript", "React", "Next.js", "Three.js", "GLSL", "GSAP", "Node.js", "Python", "Java", "PostgreSQL", "Tailwind", "Figma"],
-  contactCta: "PLACEHOLDER — Have a project or a role? Let's talk.",
+  contactCta: "Have a project or a role? Let's talk.",
   // Also used by the social skyscrapers in the hero city — paste your real profile URLs.
   socials: [
-    { label: "Instagram", href: "https://instagram.com/PLACEHOLDER" },
-    { label: "GitHub", href: "https://github.com/PLACEHOLDER" },
-    { label: "LinkedIn", href: "https://linkedin.com/in/PLACEHOLDER" },
+    { label: "Instagram", href: "https://www.instagram.com/_ecs_t_asy_/" },
+    { label: "GitHub", href: "https://github.com/JustSid26" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/sid2005/" },
     { label: "X", href: "#" },
   ],
 };
